@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../supabase'
 import { matchJob } from '../match'
 import SectionCard from './SectionCard'
+import { fetchScreenshotDownloadUrl, triggerDownload } from '../downloadShot'
 import {
   computeSkillGap,
   mintPillClaim,
@@ -32,6 +33,7 @@ export default function TailorScreen({ job, onBack }) {
   const [shotUrl, setShotUrl] = useState(null)
   const [shotError, setShotError] = useState(null)
   const [lightbox, setLightbox] = useState(false)
+  const [savingShot, setSavingShot] = useState(false)
 
   const cvSkills = useMemo(
     () => (cv?.raw_profile?.skills || []).map((s) => s.canonical),
@@ -101,6 +103,20 @@ export default function TailorScreen({ job, onBack }) {
       cancelled = true
     }
   }, [job.id, job.screenshot_path])
+
+  // Save a copy of the JD screenshot — a second, attachment-flavored signed URL
+  // (downloadShot.js); reuses shotError for the failure line.
+  async function saveShot() {
+    setSavingShot(true)
+    setShotError(null)
+    try {
+      triggerDownload(await fetchScreenshotDownloadUrl(job.id))
+    } catch (e) {
+      setShotError(String(e.message || e))
+    } finally {
+      setSavingShot(false)
+    }
+  }
 
   function confirmPill(canonical) {
     setPillDecisions((d) => ({ ...d, [canonical]: 'confirmed' }))
@@ -319,6 +335,16 @@ export default function TailorScreen({ job, onBack }) {
             {lightbox && shotUrl && (
               <div className="lightbox" onClick={() => setLightbox(false)} title="Click to close">
                 <img src={shotUrl} alt="Original JD screenshot" />
+                <button
+                  className="lightbox-save"
+                  onClick={(e) => {
+                    e.stopPropagation() // the overlay closes on click; the button must not
+                    saveShot()
+                  }}
+                  disabled={savingShot}
+                >
+                  {savingShot ? 'Preparing…' : '⤓ Download'}
+                </button>
               </div>
             )}
           </div>

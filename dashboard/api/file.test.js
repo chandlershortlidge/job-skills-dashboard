@@ -8,9 +8,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 const supa = {
   rows: {}, // id -> { screenshot_path }
   signable: true,
+  lastOptions: undefined, // options the route passed to createSignedUrl
   reset() {
     this.rows = {}
     this.signable = true
+    this.lastOptions = undefined
   },
 }
 vi.mock('@supabase/supabase-js', () => ({
@@ -24,10 +26,13 @@ vi.mock('@supabase/supabase-js', () => ({
     }),
     storage: {
       from: () => ({
-        createSignedUrl: async (path, ttl) =>
-          supa.signable
-            ? { data: { signedUrl: `https://signed.example/${path}?t=${ttl}` }, error: null }
-            : { data: null, error: { message: 'Object not found' } },
+        createSignedUrl: async (path, ttl, options) => {
+          supa.lastOptions = options
+          const dl = options?.download ? `&download=${options.download}` : ''
+          return supa.signable
+            ? { data: { signedUrl: `https://signed.example/${path}?t=${ttl}${dl}` }, error: null }
+            : { data: null, error: { message: 'Object not found' } }
+        },
       }),
     },
   }),
@@ -56,6 +61,37 @@ describe('GET /api/file (Supabase mocked)', () => {
     expect(res.statusCode).toBe(200)
     expect(res.body.url).toContain('screenshots/live-123.png')
     expect(res.body.url).toContain('t=3600')
+  })
+
+  it('plain view URLs carry no download option', async () => {
+    supa.rows['live-123'] = { screenshot_path: 'screenshots/live-123.png' }
+    const res = mockRes()
+    await handler({ method: 'GET', query: { kind: 'screenshot', id: 'live-123' } }, res)
+    expect(res.statusCode).toBe(200)
+    expect(supa.lastOptions).toBeUndefined()
+  })
+
+  it('download=1 asks for an attachment named after the stored path, not the query', async () => {
+    supa.rows['live-123'] = { screenshot_path: 'screenshots/live-123.png' }
+    const res = mockRes()
+    await handler(
+      { method: 'GET', query: { kind: 'screenshot', id: 'live-123', download: '1' } },
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    expect(supa.lastOptions).toEqual({ download: 'live-123.png' })
+    expect(res.body.url).toContain('t=3600') // same TTL as the view URL
+  })
+
+  it('ignores a non-"1" download value (no accidental attachment)', async () => {
+    supa.rows['live-123'] = { screenshot_path: 'screenshots/live-123.png' }
+    const res = mockRes()
+    await handler(
+      { method: 'GET', query: { kind: 'screenshot', id: 'live-123', download: 'evil.sh' } },
+      res,
+    )
+    expect(res.statusCode).toBe(200)
+    expect(supa.lastOptions).toBeUndefined()
   })
 
   it('rejects kind=cv with 400 — CV retrieval is cut from v1 (D1)', async () => {

@@ -94,9 +94,14 @@ export async function download(supabase, path) {
 
 // → signed URL (default 3600 s: covers a lightbox session; a leaked URL dies
 // same-day) or null if the object is missing or storage errors.
-export async function signedUrl(supabase, path, ttlSeconds = 3600) {
+// `options.download` (a filename) makes Storage serve the object with
+// Content-Disposition: attachment — the only way a cross-origin URL downloads
+// instead of opening, since the browser ignores <a download> across origins.
+export async function signedUrl(supabase, path, ttlSeconds = 3600, options = undefined) {
   try {
-    const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(path, ttlSeconds)
+    const { data, error } = await supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(path, ttlSeconds, options)
     if (error) return null
     return data?.signedUrl ?? null
   } catch (e) {

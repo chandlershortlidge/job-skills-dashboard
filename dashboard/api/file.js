@@ -1,5 +1,9 @@
 // Vercel serverless function — signed-URL read path for stored source files.
 // GET ?kind=screenshot&id=<job-id> -> { url } (signed, 3600 s) | 400 | 404.
+// Add &download=1 for a save-a-copy URL (same object, same TTL, served with
+// Content-Disposition: attachment). The attachment filename is the basename of
+// the stored path — server-generated like every storage key, never the query
+// string.
 //
 // What it does NOT do: writes of any kind (GET only), CV retrieval (kind
 // allowlist is `screenshot` only in v1 — no login + sequential cv ids would
@@ -39,7 +43,9 @@ export default async function handler(req, res) {
   const path = data?.[kind.pathColumn]
   if (!path) return res.status(404).json({ error: 'no stored file for this id' })
 
-  const signed = await signedUrl(supabase, path) // null when the object is missing
+  const asDownload = req.query?.download === '1'
+  const options = asDownload ? { download: path.split('/').pop() } : undefined
+  const signed = await signedUrl(supabase, path, 3600, options) // null when the object is missing
   if (!signed) return res.status(404).json({ error: 'stored file not found' })
   return res.status(200).json({ url: signed })
 }

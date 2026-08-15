@@ -15,6 +15,39 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-08-15 — Download a copy of the screenshot (lightbox save button)
+
+**Feature:** The screenshot lightbox (both the job-row one in `App.jsx` and the
+tailor screen's left pane) gained a corner **⤓ Download** button that saves the
+original JD screenshot to disk.
+
+**The load-bearing detail:** an `<a download>` attribute does **nothing** here —
+browsers ignore it when the href points at another origin, and our signed URLs
+are served by Supabase Storage, not by us. So the save has to come from the
+server: `GET /api/file?...&download=1` now asks `createSignedUrl` for a
+`{ download: <filename> }` URL, which makes Storage return
+`Content-Disposition: attachment`. Plain navigation to that URL downloads
+without leaving the page.
+
+**Scope calls:** download is a **separate request** returning a second signed
+URL, not an extra field on the view response — one storage call stays the cost
+of just looking. The attachment filename is the **basename of the stored path**
+(`live-123.png`), never the query string, keeping storage-blueprint's "keys and
+names are server-generated" invariant; `download` is accepted only as the exact
+value `1`. Same 3600 s TTL, same screenshot-only kind allowlist — this widens no
+access (D1 untouched; CVs still have no read path).
+
+**No new serverless function** — the client helper lives in `src/downloadShot.js`,
+so the Hobby 12-function cap (07-10 gotcha) is untouched.
+
+**Verified:** full vitest suite green (199, of which 8 are new — 5 in
+`src/downloadShot.test.js`, 3 in `api/file.test.js`), `vite build` green,
+`eslint` unchanged from its 2 pre-existing errors. **Not yet
+verified live** — the actual browser save needs a deployed row with a stored
+screenshot.
+
+---
+
 ## 2026-07-23 — Email fetch: keyword-scan the whole inbox, not a curated label
 
 Reversed the spec's original curated-fetch decision. The spec chose

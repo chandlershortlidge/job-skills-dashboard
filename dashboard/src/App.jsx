@@ -4,6 +4,7 @@ import { supabase } from './supabase'
 import { matchJob } from './match'
 import { filterJobsByCompany } from './searchJobs'
 import { findSimilarJob } from './similar'
+import { fetchScreenshotDownloadUrl, triggerDownload } from './downloadShot'
 import TailorScreen from './tailor/TailorScreen'
 import ApplicationsPage from './ApplicationsPage'
 
@@ -833,10 +834,13 @@ function MatchChips({ match }) {
 // "View screenshot" + lightbox for jobs with a stored source screenshot.
 // Fetches a short-lived signed URL from /api/file on demand (the browser has no
 // direct read access to the private bucket) and shows the image in an overlay.
+// The lightbox's Download button asks for a second, attachment-flavored URL —
+// see downloadShot.js for why it can't reuse the view URL.
 function ViewScreenshot({ jobId }) {
   const [url, setUrl] = useState(null)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   async function openShot() {
     setBusy(true)
@@ -853,6 +857,18 @@ function ViewScreenshot({ jobId }) {
     }
   }
 
+  async function saveShot() {
+    setSaving(true)
+    setError(null)
+    try {
+      triggerDownload(await fetchScreenshotDownloadUrl(jobId))
+    } catch (e) {
+      setError(String(e.message || e))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   return (
     <>
       <button className="job-shot" onClick={openShot} disabled={busy}>
@@ -862,6 +878,16 @@ function ViewScreenshot({ jobId }) {
       {url && (
         <div className="lightbox" onClick={() => setUrl(null)} title="Click to close">
           <img src={url} alt="Original JD screenshot" />
+          <button
+            className="lightbox-save"
+            onClick={(e) => {
+              e.stopPropagation() // the overlay closes on click; the button must not
+              saveShot()
+            }}
+            disabled={saving}
+          >
+            {saving ? 'Preparing…' : '⤓ Download'}
+          </button>
         </div>
       )}
     </>

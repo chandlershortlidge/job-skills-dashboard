@@ -449,6 +449,27 @@ h2 {
   box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
   background: #fff;
 }
+/* Save-a-copy, pinned to the overlay corner so it never covers the image */
+.lightbox-save {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #cfd8ea;
+  color: #3b5bdb;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.lightbox-save:hover {
+  background: #fff;
+  border-color: #a9b8dd;
+}
+.lightbox-save:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
 .job-del {
   background: none;
   border: 1px solid #f0d0d0;
