@@ -44,6 +44,7 @@ async function persistJob(supabase, job) {
         raw_text: s.raw_text,
         canonical: s.canonical,
         requirement: s.requirement,
+        alternative_group: s.alternative_group,
       })),
     )
   }
@@ -71,12 +72,25 @@ const INPUT_SCHEMA = {
           raw_text: { type: 'string' },
           canonical: { type: 'string' },
           requirement: { type: 'string', enum: ['required', 'nice_to_have'] },
+          alternative_group: { type: ['string', 'null'] },
         },
-        required: ['raw_text', 'canonical', 'requirement'],
+        required: ['raw_text', 'canonical', 'requirement', 'alternative_group'],
+      },
+    },
+    non_skill_mentions: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          raw_text: { type: 'string' },
+          category: { type: 'string', enum: ['education', 'experience', 'credential', 'soft_skill', 'responsibility'] },
+          requirement: { type: ['string', 'null'], enum: ['required', 'nice_to_have', null] },
+        },
+        required: ['raw_text', 'category', 'requirement'],
       },
     },
   },
-  required: ['company', 'title', 'seniority', 'seniority_signal', 'seniority_basis', 'summary', 'skills'],
+  required: ['company', 'title', 'seniority', 'seniority_signal', 'seniority_basis', 'summary', 'skills', 'non_skill_mentions'],
 }
 
 const SYSTEM_PROMPT = `You extract structured data from a SINGLE screenshot of a job posting.
@@ -98,9 +112,25 @@ Fields:
 - seniority_signal: the exact phrase or years the label keyed off.
 - seniority_basis: "stated" if the posting names the level explicitly, else "inferred".
 - summary: 1-2 sentences, what this role wants.
-- skills: the SET of distinct technical skills this role asks for. For each, give
-  raw_text (as it appeared), canonical (normalized), and requirement.
-- requirement: "required" or "nice_to_have". When ambiguous, default to "required".
+- skills: only distinct technical skills this role asks for: a language, framework,
+  platform, tool, technical practice, or technical field the candidate must know or use.
+  Do NOT include degrees/fields of study used as education qualifications, years or
+  prior-work experience, credentials/publications, soft skills, responsibilities, or
+  alternative experience paths. Keep every such visible item in non_skill_mentions.
+- non_skill_mentions: each excluded item as raw_text + category (education, experience,
+  credential, soft_skill, responsibility) + requirement (required/nice_to_have when
+  the JD labels it; otherwise null for a responsibility). This is an audit trail, not
+  a skills list.
+- requirement: "required" or "nice_to_have". A requirement for interest or initial
+  experience in a technical topic still names a technical skill; never turn a non-skill
+  into a skill merely to give it this label.
+- alternative_group: null for ordinary independent skills. For a clearly substitutable
+  choice such as "Python or Java", emit BOTH skills with the same local opaque id,
+  e.g. "alt-1". A comma-list remains independent even if its final item uses "or":
+  "LLMs, prompt engineering, or RAG" is three skills. Do not silently keep only the
+  first option. For named technologies in a generic category, emit the named items:
+  "cloud platforms (GCP, AWS, or Azure)" -> GCP, AWS, Azure, not "Cloud Platforms";
+  group them only when the wording makes them substitutable.
 
 DISCARD UI chrome -- NOT skills: apply buttons, German UI words (Vollzeit), model-name
 corner labels (gpt4), verified checkmarks, bookmark/share icons, nav.`
@@ -201,6 +231,7 @@ export default async function handler(req, res) {
       created_at: new Date().toISOString(),
       ...parsed,
       skills: normalizeSkills(parsed.skills, canonicalMap, { withRequirement: true }),
+      non_skill_mentions: parsed.non_skill_mentions || [],
     }
     // Store the source screenshot BEFORE the insert and the response: the path rides
     // the single row insert (no second write) and the client response (post-res.json

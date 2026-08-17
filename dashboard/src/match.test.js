@@ -4,6 +4,9 @@ import { matchJob } from './match'
 const job = (skills) => ({ skills })
 const req = (canonical) => ({ canonical, raw_text: canonical, requirement: 'required' })
 const nice = (canonical) => ({ canonical, raw_text: canonical, requirement: 'nice_to_have' })
+const alternative = (canonical, group, requirement = 'required') => ({
+  canonical, raw_text: canonical, requirement, alternative_group: group,
+})
 
 describe('matchJob', () => {
   it('splits required skills into have (matched) and missing', () => {
@@ -44,5 +47,17 @@ describe('matchJob', () => {
     expect(m.matched).toEqual([])
     expect(m.missing).toEqual(['Rust', 'Go'])
     expect(m.score).toBe(0)
+  })
+
+  it('treats explicit alternatives as one required criterion', () => {
+    const j = job([alternative('Python', 'alt-1'), alternative('Java', 'alt-1'), req('LLMs')])
+    const python = matchJob(j, new Set(['Python', 'LLMs']))
+    expect(python.matched).toEqual(['Python or Java', 'LLMs'])
+    expect(python.missing).toEqual([])
+    expect(python.score).toBe(1)
+
+    const neither = matchJob(j, new Set(['LLMs']))
+    expect(neither.missing).toEqual(['Python or Java'])
+    expect(neither.score).toBe(0.5)
   })
 })

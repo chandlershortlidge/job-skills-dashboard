@@ -20,6 +20,7 @@ import {
 
 const req = (canonical) => ({ canonical, requirement: 'required' })
 const nice = (canonical) => ({ canonical, requirement: 'nice_to_have' })
+const alternative = (canonical, alternative_group) => ({ canonical, requirement: 'required', alternative_group })
 
 // Blueprint CACE score fixture: three required skills, cv has two.
 const fixtureJob = { skills: [req('LLMs'), req('Python'), req('Docker')] }
@@ -91,6 +92,15 @@ describe('computeSkillGap', () => {
       templates: [],
     })
     expect(gap).toEqual([])
+  })
+
+  it('does not offer an alternative-group pill when any option is covered', () => {
+    const gap = computeSkillGap({
+      jobSkills: [alternative('Python', 'alt-1'), alternative('Java', 'alt-1'), req('Docker')],
+      cvSkills: ['Python'],
+      templates: [],
+    })
+    expect(gap).toEqual(['Docker'])
   })
 })
 

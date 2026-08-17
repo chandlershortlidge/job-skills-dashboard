@@ -13,9 +13,11 @@ const PARSED = {
   seniority_basis: 'inferred',
   summary: 'Builds LLM features.',
   skills: [
-    { raw_text: 'Python', canonical: 'Python', requirement: 'required' },
-    { raw_text: 'large language models', canonical: 'large language models', requirement: 'required' },
+    { raw_text: 'Python or Java', canonical: 'Python', requirement: 'required', alternative_group: 'alt-1' },
+    { raw_text: 'Python or Java', canonical: 'Java', requirement: 'required', alternative_group: 'alt-1' },
+    { raw_text: 'large language models', canonical: 'large language models', requirement: 'required', alternative_group: null },
   ],
+  non_skill_mentions: [{ raw_text: 'Degree in computer science', category: 'education', requirement: 'required' }],
 }
 
 vi.mock('@daytona/sdk', () => ({
@@ -33,12 +35,14 @@ vi.mock('@daytona/sdk', () => ({
 // The no-Supabase tests below never reach it (env deleted → supaClient() is null).
 const supa = {
   insertedJobs: [],
+  insertedSkills: [],
   uploads: [],
   removed: [],
   failUpload: false,
   insertError: null,
   reset() {
     this.insertedJobs = []
+    this.insertedSkills = []
     this.uploads = []
     this.removed = []
     this.failUpload = false
@@ -55,6 +59,7 @@ vi.mock('@supabase/supabase-js', () => ({
           if (supa.insertError) return { error: supa.insertError }
           supa.insertedJobs.push(rows)
         }
+        if (table === 'skill') supa.insertedSkills.push(...rows)
         return { error: null }
       },
     }),
@@ -133,6 +138,14 @@ describe('POST /api/extract (Daytona mocked, no Supabase)', () => {
     expect(canons).toContain('LLMs') // "large language models" -> LLMs
   })
 
+  it('returns the extraction audit and preserves alternative groups', async () => {
+    const res = mockRes()
+    await handler(REQ, res)
+    expect(res.body.job.non_skill_mentions).toEqual(PARSED.non_skill_mentions)
+    expect(res.body.job.skills.filter((s) => s.alternative_group === 'alt-1').map((s) => s.canonical))
+      .toEqual(['Python', 'Java'])
+  })
+
   it('rejects non-POST and missing image', async () => {
     const r1 = mockRes()
     await handler({ method: 'GET' }, r1)
@@ -166,6 +179,14 @@ describe('POST /api/extract (Daytona + Supabase mocked — source-file storage)'
     // single insert carries the path — no second write
     expect(supa.insertedJobs).toHaveLength(1)
     expect(supa.insertedJobs[0].screenshot_path).toBe(job.screenshot_path)
+  })
+
+  it('persists the non-skill audit on the job and alternative group on each skill', async () => {
+    const res = mockRes()
+    await handler(REQ, res)
+    expect(supa.insertedJobs[0].non_skill_mentions).toEqual(PARSED.non_skill_mentions)
+    expect(supa.insertedSkills.filter((s) => s.alternative_group === 'alt-1').map((s) => s.canonical))
+      .toEqual(['Python', 'Java'])
   })
 
   it('upload failure degrades: job persists and returns with a null path', async () => {

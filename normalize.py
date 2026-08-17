@@ -126,20 +126,28 @@ def clean_variants(canon: str, raws) -> list[str]:
 
 
 def normalize_jobs(jobs: list[dict], display: dict[str, str]) -> tuple[list[dict], dict[str, list]]:
-    """Rebuild each job's skills with normalized canonicals (distinct per job, required
-    wins), and collect the per-canonical "merged from" variants map. Pure."""
+    """Rebuild each job's skills with normalized canonicals and preserve the extraction
+    audit. Ordinary canonicals dedupe with required winning; explicit alternative groups
+    stay separate requirements. Collect the per-canonical "merged from" variants map."""
     variants: dict[str, set] = collections.defaultdict(set)
     out_jobs = []
     for job in jobs:
-        by_canon: dict[str, dict] = {}
+        by_identity: dict[tuple[str, str | None], dict] = {}
         for s in job["skills"]:
             for part in split_skill(s["canonical"]):
                 canon = resolve(part, display)
                 variants[canon].add(s["raw_text"].strip())
-                if canon not in by_canon:
-                    by_canon[canon] = {"canonical": canon, "raw_text": s["raw_text"], "requirement": s["requirement"]}
+                alternative_group = s.get("alternative_group") or None
+                identity = (canon, alternative_group)
+                if identity not in by_identity:
+                    by_identity[identity] = {
+                        "canonical": canon,
+                        "raw_text": s["raw_text"],
+                        "requirement": s["requirement"],
+                        "alternative_group": alternative_group,
+                    }
                 elif s["requirement"] == "required":
-                    by_canon[canon]["requirement"] = "required"  # prefer required if any mention is
+                    by_identity[identity]["requirement"] = "required"  # prefer required if any mention is
         out_jobs.append({
             "id": job["id"],
             "company": job["company"],
@@ -149,7 +157,8 @@ def normalize_jobs(jobs: list[dict], display: dict[str, str]) -> tuple[list[dict
             "seniority_basis": job["seniority_basis"],
             "summary": job["summary"],
             "source": job.get("source", "screenshot"),
-            "skills": list(by_canon.values()),
+            "non_skill_mentions": job.get("non_skill_mentions", []),
+            "skills": list(by_identity.values()),
         })
 
     skill_variants = {}

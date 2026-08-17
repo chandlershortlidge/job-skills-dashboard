@@ -10,7 +10,7 @@ const MAP = {
     python: 'Python',
   },
 }
-const skill = (canonical, requirement) => ({ canonical, raw_text: canonical, requirement })
+const skill = (canonical, requirement, alternative_group = null) => ({ canonical, raw_text: canonical, requirement, alternative_group })
 
 describe('normalizeSkills', () => {
   it('splits known slash-lists into separate canonicals', () => {
@@ -50,7 +50,7 @@ describe('normalizeSkills', () => {
       MAP,
       { withRequirement: true },
     )
-    expect(out).toEqual([{ canonical: 'Python', raw_text: 'Python', requirement: 'required' }])
+    expect(out).toEqual([{ canonical: 'Python', raw_text: 'Python', requirement: 'required', alternative_group: null }])
   })
 
   it('default (résumé mode) omits requirement entirely', () => {
@@ -61,5 +61,17 @@ describe('normalizeSkills', () => {
   it('tolerates null / empty input', () => {
     expect(normalizeSkills(null, MAP)).toEqual([])
     expect(normalizeSkills([], MAP)).toEqual([])
+  })
+
+  it('keeps different alternatives separate while preserving each group id', () => {
+    const out = normalizeSkills(
+      [skill('Python', 'required', 'alt-1'), skill('Java', 'required', 'alt-1')],
+      MAP,
+      { withRequirement: true },
+    )
+    expect(out).toEqual([
+      { canonical: 'Python', raw_text: 'Python', requirement: 'required', alternative_group: 'alt-1' },
+      { canonical: 'Java', raw_text: 'Java', requirement: 'required', alternative_group: 'alt-1' },
+    ])
   })
 })

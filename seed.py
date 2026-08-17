@@ -34,6 +34,7 @@ for j in jobs:
         "seniority_basis": j["seniority_basis"],
         "summary": j["summary"],
         "source": "corpus",              # seed rows are 'corpus'; live drop-ins are 'screenshot'
+        "non_skill_mentions": j.get("non_skill_mentions", []),
     })
     for s in j["skills"]:
         skill_rows.append({
@@ -41,6 +42,7 @@ for j in jobs:
             "raw_text": s["raw_text"],
             "canonical": s["canonical"],
             "requirement": s["requirement"],
+            "alternative_group": s.get("alternative_group"),
         })
 
 client.table("job").insert(job_rows).execute()      # jobs first (skill.job_id FK)

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import { supabase } from './supabase'
 import { matchJob } from './match'
+import { skillRequirements } from './skillRequirements'
 import { filterJobsByCompany } from './searchJobs'
 import { findSimilarJob } from './similar'
 import { fetchScreenshotDownloadUrl, triggerDownload } from './downloadShot'
@@ -82,10 +83,12 @@ export default function App() {
           source: j.source,
           created_at: j.created_at,
           screenshot_path: j.screenshot_path,
+          non_skill_mentions: j.non_skill_mentions || [],
           skills: (j.skill || []).map((s) => ({
             canonical: s.canonical,
             raw_text: s.raw_text,
             requirement: s.requirement,
+            alternative_group: s.alternative_group,
           })),
         }))
         setData({ jobs, skill_variants: variants.skill_variants || {} })
@@ -951,12 +954,12 @@ function JobRow({ job, resumeSet, highlight, onDelete, onTailor }) {
               the have/missing chips above already cover the (required) skills. */}
           {!myMatch && (
             <div className="chips">
-              {job.skills.map((s) => (
+              {skillRequirements(job.skills).map((s) => (
                 <span
-                  key={s.canonical}
+                  key={`${s.requirement}-${s.label}`}
                   className={'chip' + (s.requirement === 'required' ? ' req' : '')}
                 >
-                  {s.canonical}
+                  {s.label}
                 </span>
               ))}
             </div>

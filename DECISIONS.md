@@ -15,6 +15,22 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-08-17 — Keep non-skill requirements; score alternatives as one criterion
+
+The extraction contract now separates technical skills from education, experience,
+credentials, soft skills, and responsibilities. The non-skill mentions are preserved
+on the job record as structured audit data, rather than discarded, so later features
+can use them without re-reading a screenshot. They never enter the skills chart or
+résumé match.
+
+An explicit alternative such as “Python or Java” becomes two skill records in one
+alternative group. The skills chart keeps its existing document-frequency rule and
+counts both mentioned skills; résumé matching and tailoring treat the group as one
+criterion, satisfied when the candidate has either member. This prevents a candidate
+with Python from being penalized for not also having Java.
+
+---
+
 ## 2026-08-15 — Download a copy of the screenshot (lightbox save button)
 
 **Feature:** The screenshot lightbox (both the job-row one in `App.jsx` and the

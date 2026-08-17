@@ -93,15 +93,15 @@ class TestNormalizeJobs:
         for oj in out:
             assert set(oj) == {
                 "id", "company", "title", "seniority", "seniority_signal",
-                "seniority_basis", "summary", "source", "skills",
+                "seniority_basis", "summary", "source", "non_skill_mentions", "skills",
             }
 
-    def test_canonicals_are_distinct_within_a_job(self):
+    def test_skill_identities_are_distinct_within_a_job(self):
         jobs = self._sample_jobs()
         out, _ = normalize.normalize_jobs(jobs, normalize.build_display(jobs))
         for oj in out:
-            canons = [s["canonical"] for s in oj["skills"]]
-            assert len(canons) == len(set(canons)), f"duplicate canonical in {oj['id']}"
+            identities = [(s["canonical"], s["alternative_group"]) for s in oj["skills"]]
+            assert len(identities) == len(set(identities)), f"duplicate identity in {oj['id']}"
 
     def test_required_wins_over_nice_to_have(self):
         jobs = [{
@@ -115,6 +115,23 @@ class TestNormalizeJobs:
         out, _ = normalize.normalize_jobs(jobs, normalize.build_display(jobs))
         py = next(s for s in out[0]["skills"] if s["canonical"] == "Python")
         assert py["requirement"] == "required"
+
+    def test_preserves_non_skill_audit_and_alternative_groups(self):
+        jobs = [{
+            "id": "j", "company": "C", "title": "T", "seniority": "Mid",
+            "seniority_signal": None, "seniority_basis": "inferred", "summary": "s",
+            "skills": [
+                {"canonical": "Python", "raw_text": "Python or Java", "requirement": "required", "alternative_group": "alt-1"},
+                {"canonical": "Java", "raw_text": "Python or Java", "requirement": "required", "alternative_group": "alt-1"},
+            ],
+            "non_skill_mentions": [{"raw_text": "Degree in CS", "category": "education", "requirement": "required"}],
+        }]
+        out, _ = normalize.normalize_jobs(jobs, normalize.build_display(jobs))
+        assert out[0]["skills"] == [
+            {"canonical": "Python", "raw_text": "Python or Java", "requirement": "required", "alternative_group": "alt-1"},
+            {"canonical": "Java", "raw_text": "Python or Java", "requirement": "required", "alternative_group": "alt-1"},
+        ]
+        assert out[0]["non_skill_mentions"] == jobs[0]["non_skill_mentions"]
 
 
 class TestGolden:

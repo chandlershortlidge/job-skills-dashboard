@@ -2,10 +2,11 @@
 // TailorScreen delegates every decision that matters to these functions so the
 // pill/checklist/assembly/staleness/score logic stays unit-testable.
 import { sha256Hex } from './anchor.js'
+import { requiredSkillRequirements } from '../skillRequirements.js'
 
 // Skill-gap pills: required JD canonicals absent from BOTH the cv skill set and
 // every template claim's `skills` stamp (spec C8 "Before the loop").
-// jobSkills: [{canonical, requirement}]; cvSkills: [string];
+// jobSkills: [{canonical, requirement, alternative_group?}]; cvSkills: [string];
 // templates: [{claims: [{id, text, skills: [string]}]}]
 // → sorted, deduped [canonical]
 export function computeSkillGap({ jobSkills, cvSkills, templates }) {
@@ -15,12 +16,10 @@ export function computeSkillGap({ jobSkills, cvSkills, templates }) {
       for (const skill of claim.skills || []) covered.add(skill)
     }
   }
-  const gap = new Set()
-  for (const s of jobSkills) {
-    if (s.requirement !== 'required') continue
-    if (!covered.has(s.canonical)) gap.add(s.canonical)
-  }
-  return [...gap].sort()
+  return requiredSkillRequirements(jobSkills)
+    .filter((r) => !r.options.some((skill) => covered.has(skill)))
+    .map((r) => r.label)
+    .sort()
 }
 
 // Pill confirm → first-class claim, exact pill_claim shape from the data schema.

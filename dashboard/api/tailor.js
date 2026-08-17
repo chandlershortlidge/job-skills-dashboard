@@ -21,6 +21,7 @@ import {
 import { judge } from '../api-lib/tailor/judge.js'
 import { anchorSections, sha256Hex } from '../src/tailor/anchor.js'
 import { validateClaimIds, digitDiff } from '../src/tailor/provenance.js'
+import { requiredSkillRequirements } from '../src/skillRequirements.js'
 
 // One Anthropic messages call. Returns the forced tool_use input object, or
 // null on non-200 / missing tool block. Network throws propagate to the caller
@@ -161,7 +162,8 @@ async function generate(supabase, apiKey, body, res) {
     return res.status(409).json({ error: 'stale split — re-run split' })
   }
 
-  // 2. job + its required skills (this job only, canonical, deduped) + section span.
+  // 2. job + its required skills (this job only; explicit alternatives stay one
+  // criterion in the prompt) + section span.
   //    Select errors are 500s, not empty results — a transient DB failure must
   //    never silently build a prompt without JD skills (house pattern: file.js).
   const { data: job, error: jobError } = await supabase
@@ -173,11 +175,11 @@ async function generate(supabase, apiKey, body, res) {
   if (!job) return res.status(404).json({ error: 'job not found' })
   const { data: skillRows, error: skillError } = await supabase
     .from('skill')
-    .select('canonical')
+    .select('canonical, alternative_group')
     .eq('job_id', body.jobId)
     .eq('requirement', 'required')
   if (skillError) return res.status(500).json({ error: 'lookup failed' })
-  const jdSkills = [...new Set((skillRows ?? []).map((r) => r.canonical))]
+  const jdSkills = requiredSkillRequirements(skillRows ?? []).map((r) => r.label)
   const span = split.sections.find((s) => s.name === body?.sectionName)
   if (!span) return res.status(404).json({ error: 'section not found' })
   // orig-claim: minted server-side from the persisted transcript slice.

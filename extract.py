@@ -46,11 +46,32 @@ class Requirement(str, Enum):
     nice_to_have = "nice_to_have"
 
 
+class NonSkillCategory(str, Enum):
+    education = "education"
+    experience = "experience"
+    credential = "credential"
+    soft_skill = "soft_skill"
+    responsibility = "responsibility"
+
+
 class Skill(BaseModel):
     raw_text: str = Field(description="the skill exactly as it appeared")
     canonical: str = Field(description="normalized canonical name (a hint; code decides the real one)")
     requirement: Requirement = Field(
         description="required vs nice_to_have; default to required when the JD is ambiguous"
+    )
+    alternative_group: Optional[str] = Field(
+        default=None,
+        description="null unless this is one option in an explicit alternative; sibling options share a local id such as alt-1",
+    )
+
+
+class NonSkillMention(BaseModel):
+    raw_text: str = Field(description="the full wording exactly as it appeared")
+    category: NonSkillCategory
+    requirement: Optional[Requirement] = Field(
+        default=None,
+        description="required or nice_to_have when the JD labels the item; otherwise null for a responsibility",
     )
 
 
@@ -62,6 +83,7 @@ class JobExtraction(BaseModel):
     seniority_basis: Optional[SeniorityBasis]
     summary: Optional[str] = Field(description="1-2 sentences: what this role wants")
     skills: list[Skill]
+    non_skill_mentions: list[NonSkillMention]
 
 
 SYSTEM_PROMPT = """You extract structured data from a SINGLE screenshot of a job posting.
@@ -84,12 +106,26 @@ Fields:
   (e.g. "(Junior)", "initial experience or a very strong interest", "5+ years").
 - seniority_basis: "stated" if the posting names the level explicitly, else "inferred".
 - summary: 1-2 sentences, what this role wants.
-- skills: the SET of distinct technical skills this role asks for. For each, give
-  raw_text (as it appeared), canonical (normalized), and requirement.
+- skills: only distinct technical skills this role asks for: a language, framework,
+  platform, tool, technical practice, or technical field the candidate must know or use.
+  Do NOT include degrees/fields of study used as education qualifications, years or
+  prior-work experience, credentials/publications, soft skills, responsibilities, or
+  alternative experience paths. Keep every such visible item in non_skill_mentions.
+- non_skill_mentions: each excluded item as raw_text + category (education, experience,
+  credential, soft_skill, responsibility) + requirement (required/nice_to_have when
+  the JD labels it; otherwise null for a responsibility). This is an audit trail, not
+  a skills list.
 - requirement: "required" or "nice_to_have". JDs usually split these into "must have" /
-  "nice to have" (or "bonus" / "a plus") sections -- key off that. When a skill's section
-  is ambiguous, default to "required". Still extract nice-to-haves -- they are kept in the
-  data, just hidden from the default chart view.
+  "nice to have" (or "bonus" / "a plus") sections -- key off that. A requirement for
+  interest or initial experience in a technical topic still names a technical skill;
+  never turn a non-skill into a skill merely to give it this label.
+- alternative_group: null for ordinary independent skills. For a clearly substitutable
+  choice such as "Python or Java", emit BOTH skills with the same local opaque id,
+  e.g. "alt-1". A comma-list remains independent even if its final item uses "or":
+  "LLMs, prompt engineering, or RAG" is three skills. Do not silently keep only the
+  first option. For named technologies in a generic category, emit the named items:
+  "cloud platforms (GCP, AWS, or Azure)" -> GCP, AWS, Azure, not "Cloud Platforms";
+  group them only when the wording makes them substitutable.
 
 NORMALIZATION (canonical) -- collapse variants to ONE canonical name. Seed map (extend sensibly):
 - LLMs            <- large language models, LLM, LLM APIs, LLM orchestration

@@ -6,8 +6,10 @@
 //
 // The `canonicalMap` ({ splits, map }) is passed in rather than imported, so this stays a
 // pure function (testable with a controlled map). `withRequirement: true` keeps each skill's
-// required/nice-to-have and prefers "required" when the same canonical appears both ways
-// (jobs); résumés leave it false (a résumé has no requirement).
+// required/nice-to-have and keeps an explicit alternative_group when present. The
+// group is part of a job requirement's identity: the same canonical can occur in
+// two separate alternatives and must not make either criterion disappear. Résumés
+// leave it false (a résumé has no requirement).
 export function normalizeSkills(skills, canonicalMap, { withRequirement = false } = {}) {
   const { splits, map } = canonicalMap
   const byCanon = {}
@@ -23,12 +25,14 @@ export function normalizeSkills(skills, canonicalMap, { withRequirement = false 
       const k2 = k1.replace(/\s*\([^)]*\)/g, '').trim()
       const canon = map[k1] || map[k3] || map[k2] || part
       if (!canon) continue
-      if (!byCanon[canon]) {
-        byCanon[canon] = withRequirement
-          ? { canonical: canon, raw_text: s.raw_text, requirement: s.requirement }
+      const alternativeGroup = s.alternative_group || null
+      const identity = withRequirement && alternativeGroup ? `${canon}\u0000${alternativeGroup}` : canon
+      if (!byCanon[identity]) {
+        byCanon[identity] = withRequirement
+          ? { canonical: canon, raw_text: s.raw_text, requirement: s.requirement, alternative_group: alternativeGroup }
           : { canonical: canon, raw_text: s.raw_text }
       } else if (withRequirement && s.requirement === 'required') {
-        byCanon[canon].requirement = 'required' // prefer required if any mention is
+        byCanon[identity].requirement = 'required' // prefer required if any mention is
       }
     }
   }
