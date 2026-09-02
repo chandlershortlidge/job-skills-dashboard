@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../supabase'
 import { matchJob } from '../match'
+import { sanitizeResumeProfile } from '../skillImplications'
 import SectionCard from './SectionCard'
 import { fetchScreenshotDownloadUrl, triggerDownload } from '../downloadShot'
 import {
@@ -64,8 +65,11 @@ export default function TailorScreen({ job, onBack }) {
         supabase.from('project_template').select('id, name, claims'),
       ])
       if (cancelled) return
-      const row =
+      const savedRow =
         (cvRes.data || []).find((c) => c.full_text != null && c.sections != null) || null
+      const row = savedRow
+        ? { ...savedRow, raw_profile: sanitizeResumeProfile(savedRow.raw_profile) }
+        : null
       const tpls = tplRes.data || []
       setCv(row)
       setTemplates(tpls)

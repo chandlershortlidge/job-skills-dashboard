@@ -45,23 +45,6 @@ async function persistCv(supabase, profile, filename) {
 
 const MODEL = 'claude-sonnet-4-6'
 
-// "LLMs" rarely appears literally on a résumé even when the candidate clearly does LLM work,
-// so most JDs mark it as missing. Deterministic inference (in code, NOT the prompt — per the
-// project's normalize-in-code principle, DECISIONS 09:26): if the résumé carries clear
-// LLM-signal skills, add "LLMs". Conservative: only strong signals trigger it.
-const LLM_SIGNALS = new Set([
-  'RAG', 'LangChain', 'LangGraph', 'LangSmith', 'LlamaIndex', 'Prompt engineering',
-  'Fine-tuning', 'Tool calling', 'Agents', 'OpenAI API',
-])
-function addInferredLLMs(skills) {
-  const have = new Set(skills.map((s) => s.canonical))
-  if (have.has('LLMs')) return skills
-  if (skills.some((s) => LLM_SIGNALS.has(s.canonical))) {
-    return [...skills, { canonical: 'LLMs', raw_text: 'inferred from LLM tooling' }]
-  }
-  return skills
-}
-
 const USER_TEXT = "Extract the candidate's technical skills from this resume."
 
 // Plain JSON schema (no $ref) for the tool the model must call.
@@ -179,7 +162,7 @@ export default async function handler(req, res) {
     const profile = {
       title: parsed.title ?? null,
       years_experience: parsed.years_experience ?? null,
-      skills: addInferredLLMs(normalizeSkills(parsed.skills, canonicalMap)),
+      skills: normalizeSkills(parsed.skills, canonicalMap),
     }
     const supabase = supaClient()
     let cv = null

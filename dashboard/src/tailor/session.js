@@ -3,6 +3,7 @@
 // pill/checklist/assembly/staleness/score logic stays unit-testable.
 import { sha256Hex } from './anchor.js'
 import { requiredSkillRequirements } from '../skillRequirements.js'
+import { expandSkillEvidence } from '../skillImplications.js'
 
 // Skill-gap pills: required JD canonicals absent from BOTH the cv skill set and
 // every template claim's `skills` stamp (spec C8 "Before the loop").
@@ -16,8 +17,9 @@ export function computeSkillGap({ jobSkills, cvSkills, templates }) {
       for (const skill of claim.skills || []) covered.add(skill)
     }
   }
+  const evidence = expandSkillEvidence(covered)
   return requiredSkillRequirements(jobSkills)
-    .filter((r) => !r.options.some((skill) => covered.has(skill)))
+    .filter((r) => !r.options.some((skill) => evidence.has(skill)))
     .map((r) => r.label)
     .sort()
 }

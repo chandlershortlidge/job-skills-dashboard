@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 import { supabase } from './supabase'
 import { matchJob } from './match'
+import { sanitizeResumeProfile } from './skillImplications'
 import { skillRequirements } from './skillRequirements'
 import { filterJobsByCompany } from './searchJobs'
 import { findSimilarJob } from './similar'
@@ -109,7 +110,11 @@ export default function App() {
       .order('created_at', { ascending: false })
       .then(({ data, error }) => {
         if (error || !data?.length) return
-        const cvs = data.map((c) => ({ id: c.id, name: c.name, profile: c.raw_profile }))
+        const cvs = data.map((c) => ({
+          id: c.id,
+          name: c.name,
+          profile: sanitizeResumeProfile(c.raw_profile),
+        }))
         setSavedCvs(cvs)
         setSelectedCvId(cvs[0].id)
         setResumeProfile(cvs[0].profile) // restore the most recent match on load

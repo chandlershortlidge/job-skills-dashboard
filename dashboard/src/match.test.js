@@ -21,6 +21,31 @@ describe('matchJob', () => {
     expect(matchJob(j, new Set(['Python', 'LLMs', 'RAG'])).score).toBe(0.75)
   })
 
+  it('lets specific evidence satisfy itself and an explicit broad parent', () => {
+    const j = job([req('LLMs'), req('RAG'), req('Prompt engineering')])
+    const m = matchJob(j, new Set(['RAG']))
+
+    expect(m.matched).toEqual(['LLMs', 'RAG'])
+    expect(m.missing).toEqual(['Prompt engineering'])
+    expect(m.score).toBe(2 / 3)
+  })
+
+  it('never lets broad evidence satisfy a specific child', () => {
+    const j = job([req('LLMs'), req('RAG'), req('Prompt engineering')])
+    const m = matchJob(j, new Set(['LLMs']))
+
+    expect(m.matched).toEqual(['LLMs'])
+    expect(m.missing).toEqual(['RAG', 'Prompt engineering'])
+  })
+
+  it('counts an implied parent once when multiple children support it', () => {
+    const j = job([req('LLMs'), req('RAG'), req('Prompt engineering')])
+    const m = matchJob(j, new Set(['RAG', 'Prompt engineering']))
+
+    expect(m.matched).toEqual(['LLMs', 'RAG', 'Prompt engineering'])
+    expect(m.score).toBe(1)
+  })
+
   it('ignores nice-to-have skills entirely', () => {
     const m = matchJob(job([req('Python'), nice('Docker')]), new Set(['Python']))
     expect(m.matched).toEqual(['Python'])
@@ -59,5 +84,40 @@ describe('matchJob', () => {
     const neither = matchJob(j, new Set(['LLMs']))
     expect(neither.missing).toEqual(['Python or Java'])
     expect(neither.score).toBe(0.5)
+  })
+
+  it('lets AWS satisfy both explicit Cloud and one provider alternative criterion', () => {
+    const j = job([
+      req('Cloud'),
+      alternative('AWS', 'cloud-platform'),
+      alternative('Azure', 'cloud-platform'),
+      alternative('GCP', 'cloud-platform'),
+    ])
+    const m = matchJob(j, new Set(['AWS']))
+
+    expect(m.matched).toEqual(['Cloud', 'AWS or Azure or GCP'])
+    expect(m.score).toBe(1)
+  })
+
+  it('lets Golden 018 storage evidence satisfy nested broad criteria only upward', () => {
+    const j = job([
+      req('Data stores'),
+      alternative('SQL', 'data-store-type'),
+      alternative('Object Storage', 'data-store-type'),
+      alternative('NoSQL', 'data-store-type'),
+      alternative('PostgreSQL', 'sql-database'),
+      alternative('MySQL', 'sql-database'),
+    ])
+
+    expect(matchJob(j, new Set(['PostgreSQL']))).toEqual({
+      matched: ['Data stores', 'SQL or Object Storage or NoSQL', 'PostgreSQL or MySQL'],
+      missing: [],
+      score: 1,
+    })
+    expect(matchJob(j, new Set(['Data stores']))).toEqual({
+      matched: ['Data stores'],
+      missing: ['SQL or Object Storage or NoSQL', 'PostgreSQL or MySQL'],
+      score: 1 / 3,
+    })
   })
 })

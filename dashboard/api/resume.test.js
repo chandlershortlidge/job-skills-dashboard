@@ -1,8 +1,8 @@
 // Tests for the résumé handler (api/resume.js) with Daytona + Supabase mocked —
 // no network, no real LLM call (AGENTS.md: never live). Locks the storage
-// contract added in step 3 of source-file-storage-plan.md: insert-then-upload
-// ordering (cvs/<id>.pdf), pdf_path stamped on the row, and every failure path
-// degrading to a served profile.
+// contract in storage-blueprint.md: insert-then-upload ordering (cvs/<id>.pdf),
+// pdf_path stamped on the row, and every failure path degrading to a served
+// profile.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 // The parsed profile the "model" returns from inside the sandbox.
@@ -31,12 +31,14 @@ const supa = {
   nextId: 17,
   updates: [],
   uploads: [],
+  inserts: [],
   failInsert: false,
   failUpload: false,
   reset() {
     this.nextId = 17
     this.updates = []
     this.uploads = []
+    this.inserts = []
     this.failInsert = false
     this.failUpload = false
   },
@@ -44,14 +46,17 @@ const supa = {
 vi.mock('@supabase/supabase-js', () => ({
   createClient: () => ({
     from: () => ({
-      insert: () => ({
-        select: () => ({
-          single: async () =>
-            supa.failInsert
-              ? { data: null, error: { message: 'insert boom' } }
-              : { data: { id: supa.nextId }, error: null },
-        }),
-      }),
+      insert: (row) => {
+        supa.inserts.push(row)
+        return {
+          select: () => ({
+            single: async () =>
+              supa.failInsert
+                ? { data: null, error: { message: 'insert boom' } }
+                : { data: { id: supa.nextId }, error: null },
+          }),
+        }
+      },
       update: (patch) => ({
         eq: async (col, val) => {
           supa.updates.push({ patch, col, val })
@@ -136,11 +141,11 @@ describe('POST /api/resume (Daytona + Supabase mocked — source-file storage)',
     expect(supa.uploads).toEqual([])
   })
 
-  it('profile behavior unchanged: skills normalized + LLMs inferred from RAG signal', async () => {
+  it('normalizes and persists only extracted skills without synthetic LLM rows', async () => {
     const res = mockRes()
     await handler(REQ, res)
     const canons = res.body.profile.skills.map((s) => s.canonical)
-    expect(canons).toContain('RAG')
-    expect(canons).toContain('LLMs') // addInferredLLMs: RAG is a strong LLM signal
+    expect(canons).toEqual(['Python', 'RAG'])
+    expect(supa.inserts[0].skills.map((s) => s.canonical)).toEqual(['Python', 'RAG'])
   })
 })

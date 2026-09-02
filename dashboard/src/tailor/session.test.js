@@ -102,6 +102,35 @@ describe('computeSkillGap', () => {
     })
     expect(gap).toEqual(['Docker'])
   })
+
+  it('uses the same specific-to-broad evidence as résumé matching', () => {
+    const jobSkills = [req('LLMs'), req('RAG'), req('Prompt engineering')]
+    const cvSkills = ['RAG']
+    const gap = computeSkillGap({ jobSkills, cvSkills, templates: [] })
+    const match = matchJob({ skills: jobSkills }, new Set(cvSkills))
+
+    expect(gap).toEqual(['Prompt engineering'])
+    expect(gap).toEqual([...match.missing].sort())
+  })
+
+  it('expands combined CV and template evidence once, including transitive parents', () => {
+    const gap = computeSkillGap({
+      jobSkills: [req('LLMs'), req('LLM orchestration'), req('LangChain'), req('RAG')],
+      cvSkills: ['RAG'],
+      templates: [{ claims: [{ id: 'jp-1', text: 'Built chains', skills: ['LangChain'] }] }],
+    })
+
+    expect(gap).toEqual([])
+  })
+
+  it('does not let a broad CV skill cover a specific child', () => {
+    const gap = computeSkillGap({
+      jobSkills: [req('LLMs'), req('RAG')],
+      cvSkills: ['LLMs'],
+      templates: [],
+    })
+    expect(gap).toEqual(['RAG'])
+  })
 })
 
 // --- mintPillClaim ------------------------------------------------------------
