@@ -14,6 +14,7 @@
     "@daytona/sdk": "^0.190.1",
     "@supabase/supabase-js": "^2.110.0",
     "docx": "^9.7.1",
+    "langsmith": "^0.8.11",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
