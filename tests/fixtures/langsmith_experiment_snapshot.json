@@ -1,0 +1,1305 @@
+{
+  "dataset": {
+    "id": "dataset-1",
+    "name": "jd-skill-extraction-golden-v1"
+  },
+  "feedback": [
+    {
+      "id": "feedback-84",
+      "key": "responsibility_support",
+      "run_id": "run-4",
+      "score": 2.0
+    },
+    {
+      "id": "feedback-83",
+      "key": "responsibility_recall",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-82",
+      "key": "responsibility_precision",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-81",
+      "key": "soft_skill_support",
+      "run_id": "run-4",
+      "score": 3.0
+    },
+    {
+      "id": "feedback-80",
+      "key": "soft_skill_recall",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-79",
+      "key": "soft_skill_precision",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-78",
+      "key": "experience_requirement_support",
+      "run_id": "run-4",
+      "score": 7.0
+    },
+    {
+      "id": "feedback-77",
+      "key": "experience_requirement_recall",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-76",
+      "key": "experience_requirement_precision",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-75",
+      "key": "qualification_support",
+      "run_id": "run-4",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-74",
+      "key": "qualification_recall",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-73",
+      "key": "qualification_precision",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-72",
+      "key": "audit_structured_accuracy",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-71",
+      "key": "audit_category_label_accuracy",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-70",
+      "key": "non_skill_recall",
+      "run_id": "run-4",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-69",
+      "key": "non_skill_precision",
+      "run_id": "run-4",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-68",
+      "key": "skill_requirement_accuracy",
+      "run_id": "run-4",
+      "score": 0.5833
+    },
+    {
+      "id": "feedback-67",
+      "key": "skill_canonical_recall",
+      "run_id": "run-4",
+      "score": 0.8
+    },
+    {
+      "id": "feedback-66",
+      "key": "skill_canonical_precision",
+      "run_id": "run-4",
+      "score": 0.6
+    },
+    {
+      "id": "feedback-65",
+      "key": "responsibility_support",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-64",
+      "key": "responsibility_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-63",
+      "key": "responsibility_precision",
+      "run_id": "run-3",
+      "score": 0.5
+    },
+    {
+      "id": "feedback-62",
+      "key": "language_requirement_support",
+      "run_id": "run-3",
+      "score": 2.0
+    },
+    {
+      "id": "feedback-61",
+      "key": "language_requirement_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-60",
+      "key": "language_requirement_precision",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-59",
+      "key": "eligibility_support",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-58",
+      "key": "eligibility_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-57",
+      "key": "eligibility_precision",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-56",
+      "key": "experience_requirement_support",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-55",
+      "key": "experience_requirement_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-54",
+      "key": "experience_requirement_precision",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-53",
+      "key": "qualification_support",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-52",
+      "key": "qualification_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-51",
+      "key": "qualification_precision",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-50",
+      "key": "audit_structured_accuracy",
+      "run_id": "run-3",
+      "score": 0.6667
+    },
+    {
+      "id": "feedback-49",
+      "key": "audit_category_label_accuracy",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-48",
+      "key": "non_skill_recall",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-47",
+      "key": "non_skill_precision",
+      "run_id": "run-3",
+      "score": 0.75
+    },
+    {
+      "id": "feedback-46",
+      "key": "skill_alternative_group_accuracy",
+      "run_id": "run-3",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-45",
+      "key": "skill_requirement_accuracy",
+      "run_id": "run-3",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-44",
+      "key": "skill_canonical_recall",
+      "run_id": "run-3",
+      "score": 0.9
+    },
+    {
+      "id": "feedback-43",
+      "key": "skill_canonical_precision",
+      "run_id": "run-3",
+      "score": 0.9
+    },
+    {
+      "id": "feedback-42",
+      "key": "responsibility_support",
+      "run_id": "run-2",
+      "score": 2.0
+    },
+    {
+      "id": "feedback-41",
+      "key": "responsibility_recall",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-40",
+      "key": "responsibility_precision",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-39",
+      "key": "soft_skill_support",
+      "run_id": "run-2",
+      "score": 3.0
+    },
+    {
+      "id": "feedback-38",
+      "key": "soft_skill_recall",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-37",
+      "key": "soft_skill_precision",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-36",
+      "key": "experience_requirement_support",
+      "run_id": "run-2",
+      "score": 7.0
+    },
+    {
+      "id": "feedback-35",
+      "key": "experience_requirement_recall",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-34",
+      "key": "experience_requirement_precision",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-33",
+      "key": "qualification_support",
+      "run_id": "run-2",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-32",
+      "key": "qualification_recall",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-31",
+      "key": "qualification_precision",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-30",
+      "key": "audit_structured_accuracy",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-29",
+      "key": "audit_category_label_accuracy",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-28",
+      "key": "non_skill_recall",
+      "run_id": "run-2",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-27",
+      "key": "non_skill_precision",
+      "run_id": "run-2",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-26",
+      "key": "skill_requirement_accuracy",
+      "run_id": "run-2",
+      "score": 0.5455
+    },
+    {
+      "id": "feedback-25",
+      "key": "skill_canonical_recall",
+      "run_id": "run-2",
+      "score": 0.7333
+    },
+    {
+      "id": "feedback-24",
+      "key": "skill_canonical_precision",
+      "run_id": "run-2",
+      "score": 0.5789
+    },
+    {
+      "id": "feedback-23",
+      "key": "responsibility_support",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-22",
+      "key": "responsibility_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-21",
+      "key": "responsibility_precision",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-20",
+      "key": "language_requirement_support",
+      "run_id": "run-1",
+      "score": 2.0
+    },
+    {
+      "id": "feedback-19",
+      "key": "language_requirement_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-18",
+      "key": "language_requirement_precision",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-17",
+      "key": "eligibility_support",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-16",
+      "key": "eligibility_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-15",
+      "key": "eligibility_precision",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-14",
+      "key": "experience_requirement_support",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-13",
+      "key": "experience_requirement_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-12",
+      "key": "experience_requirement_precision",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-11",
+      "key": "qualification_support",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-10",
+      "key": "qualification_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-9",
+      "key": "qualification_precision",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-8",
+      "key": "audit_structured_accuracy",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-7",
+      "key": "audit_category_label_accuracy",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-6",
+      "key": "non_skill_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-5",
+      "key": "non_skill_precision",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-4",
+      "key": "skill_alternative_group_accuracy",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-3",
+      "key": "skill_requirement_accuracy",
+      "run_id": "run-1",
+      "score": 1.0
+    },
+    {
+      "id": "feedback-2",
+      "key": "skill_canonical_recall",
+      "run_id": "run-1",
+      "score": 0.0
+    },
+    {
+      "id": "feedback-1",
+      "key": "skill_canonical_precision",
+      "run_id": "run-1",
+      "score": 1.0
+    }
+  ],
+  "historical_examples": [
+    {
+      "as_of": "2026-08-19T04:49:01.592Z",
+      "id": "example-2",
+      "inputs": {
+        "job_description": "Junior AI Engineer (m/f/d)\n\nProfile:\nDegree in computer science, machine learning, data engineering, or a related field.\nExperience: First practical experience (e.g. internship, student project, open source) with data and AI, machine learning, or software development.\nProficiency in Python and familiarity with cloud platforms (GCP, AWS, or Azure).\nInterest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).\nBonus: Familiarity with ML libraries (e.g. Hugging Face, LangChain) or DevOps tools (e.g. Docker).\nLanguages: Strong English skills; German is a plus.\nWork Eligibility: A valid work permit for Germany.\n\nWhy ARTEFACT?\nWork on real data and AI projects with leading clients from day one.\nGrow your career with mentoring, internal workshops, and certifications from partners like Google & Amazon.\nBe part of an international team with strong team spirit, flat hierarchies, and a culture of learning.\nAttractive benefits: hybrid work, flexible hours, 1 additional day off for your birthday, Christmas & New Year's Eve off, mental health support, 4 weeks of workation, corporate benefits, office brunch, team events, and more."
+      },
+      "outputs": {
+        "expected_extraction": {
+          "non_skill_mentions": [
+            {
+              "category": "qualification",
+              "raw_text": "Degree in computer science, machine learning, data engineering, or a related field.",
+              "requirement": "required",
+              "subtype": "education"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "First practical experience (e.g. internship, student project, open source) with data and AI, machine learning, or software development.",
+              "requirement": "required"
+            },
+            {
+              "category": "language_requirement",
+              "language": "English",
+              "proficiency": "strong",
+              "raw_text": "Strong English skills",
+              "requirement": "required"
+            },
+            {
+              "category": "language_requirement",
+              "language": "German",
+              "proficiency": null,
+              "raw_text": "German is a plus",
+              "requirement": "nice_to_have"
+            },
+            {
+              "category": "eligibility",
+              "raw_text": "A valid work permit for Germany.",
+              "requirement": "required"
+            },
+            {
+              "category": "responsibility",
+              "raw_text": "Work on real data and AI projects with leading clients from day one.",
+              "requirement": null
+            }
+          ],
+          "technical_skills": [
+            {
+              "alternative_group": null,
+              "canonical": "Python",
+              "raw_text": "Proficiency in Python",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": "cloud_platform",
+              "canonical": "GCP",
+              "raw_text": "familiarity with cloud platforms (GCP, AWS, or Azure)",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": "cloud_platform",
+              "canonical": "AWS",
+              "raw_text": "familiarity with cloud platforms (GCP, AWS, or Azure)",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": "cloud_platform",
+              "canonical": "Azure",
+              "raw_text": "familiarity with cloud platforms (GCP, AWS, or Azure)",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "LLMs",
+              "raw_text": "Interest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Prompt Engineering",
+              "raw_text": "Interest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Retrieval-Augmented Generation",
+              "raw_text": "Interest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Hugging Face",
+              "raw_text": "Familiarity with ML libraries (e.g. Hugging Face, LangChain)",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "LangChain",
+              "raw_text": "Familiarity with ML libraries (e.g. Hugging Face, LangChain)",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Docker",
+              "raw_text": "DevOps tools (e.g. Docker)",
+              "requirement": "nice_to_have"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "as_of": "2026-08-18T07:41:37.577Z",
+      "id": "example-1",
+      "inputs": {
+        "job_description": "Agentic AI Engineer (m/f/d)\nMercanis \u00b7 Berlin, Berlin, Germany (On-site)\n\nAbout the job\n\nYour mission at Mercanis\n\nAt Mercanis, we are building the Agentic AI Procurement Suite that powers the procurement of tomorrow, digital, transparent, and intelligent.\n\nWe are looking for an experienced Agentic AI Engineer to join our growing AI team. In this role, you will design, build, and optimize agentic AI systems that automate complex procurement workflows and power intelligent decision-making across our platform.\n\nYou will work with cutting-edge technologies in Python, LangGraph, and AWS, integrating and fine-tuning models from leading providers such as OpenAI, Anthropic, and AWS Bedrock.\n\nYour work will have a direct impact on how organizations streamline their procurement processes and leverage AI for strategic advantage.\n\nYour Responsibilities On This Role\n\n\u2022 Strong professional experience in Python software development\n\u2022 Proven experience building AI-driven or agentic systems, preferably with LangGraph or similar frameworks\n\u2022 Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data\n\u2022 Hands-on experience working with LLM providers such as OpenAI, Anthropic, or AWS Bedrock\n\u2022 Familiarity with cloud-based deployment and scaling, ideally using AWS services\n\u2022 Strong problem-solving skills with a focus on maintainable, efficient, and scalable code\n\u2022 A collaborative mindset and comfort working remotely with distributed teams\n\u2022 Curiosity, adaptability, and a passion for staying ahead in the evolving world of AI\n\u2022 Bonus: Experience with semantic search technologies (vector databases, embeddings, RAG systems)\n\u2022 Bonus: Strong background in measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking\n\u2022 Bonus: Experience implementing observability and monitoring solutions for AI systems to track quality and iterate on improvements\n\u2022 Bonus: Experience building or integrating MCP (Model Context Protocol) servers for extending AI capabilities\n\u2022 Bonus: Knowledge of agent-to-agent (A2A) communication patterns and multi-agent system architectures\n\nRole Requirements\n\nTech stack you will work with:\n\n\u2022 Languages: Python\n\u2022 Frameworks & Tools: LangGraph & related LLM orchestration tools, Docling, LiteLLM, Phoenix\n\u2022 Infrastructure: AWS (Lambda, S3, ECS, and more)\n\u2022 Models: OpenAI, Anthropic, AWS Bedrock, and other foundation model providers"
+      },
+      "outputs": {
+        "expected_extraction": {
+          "non_skill_mentions": [
+            {
+              "category": "experience_requirement",
+              "raw_text": "Strong professional experience in Python software development",
+              "requirement": "required"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Proven experience building AI-driven or agentic systems, preferably with LangGraph or similar frameworks",
+              "requirement": "required"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Hands-on experience working with LLM providers such as OpenAI, Anthropic, or AWS Bedrock",
+              "requirement": "required"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Familiarity with cloud-based deployment and scaling, ideally using AWS services",
+              "requirement": "required"
+            },
+            {
+              "category": "soft_skill",
+              "raw_text": "Strong problem-solving skills with a focus on maintainable, efficient, and scalable code",
+              "requirement": "required"
+            },
+            {
+              "category": "soft_skill",
+              "raw_text": "A collaborative mindset and comfort working remotely with distributed teams",
+              "requirement": "required"
+            },
+            {
+              "category": "soft_skill",
+              "raw_text": "Curiosity, adaptability, and a passion for staying ahead in the evolving world of AI",
+              "requirement": "required"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Strong background in measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking",
+              "requirement": "nice_to_have"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Experience implementing observability and monitoring solutions for AI systems to track quality and iterate on improvements",
+              "requirement": "nice_to_have"
+            },
+            {
+              "category": "experience_requirement",
+              "raw_text": "Experience building or integrating MCP (Model Context Protocol) servers for extending AI capabilities",
+              "requirement": "nice_to_have"
+            },
+            {
+              "category": "qualification",
+              "raw_text": "Knowledge of agent-to-agent (A2A) communication patterns and multi-agent system architectures",
+              "requirement": "nice_to_have",
+              "subtype": "domain_knowledge"
+            },
+            {
+              "category": "responsibility",
+              "raw_text": "design, build, and optimize agentic AI systems that automate complex procurement workflows and power intelligent decision-making across our platform",
+              "requirement": null
+            },
+            {
+              "category": "responsibility",
+              "raw_text": "integrating and fine-tuning models from leading providers such as OpenAI, Anthropic, and AWS Bedrock",
+              "requirement": null
+            }
+          ],
+          "technical_skills": [
+            {
+              "alternative_group": null,
+              "canonical": "Python",
+              "raw_text": "Strong professional experience in Python software development",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Agents",
+              "raw_text": "Proven experience building AI-driven or agentic systems",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "LLMs",
+              "raw_text": "Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "APIs",
+              "raw_text": "Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data",
+              "requirement": "required"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "LangGraph",
+              "raw_text": "preferably with LangGraph or similar frameworks",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "AWS",
+              "raw_text": "cloud-based deployment and scaling, ideally using AWS services",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Docling",
+              "raw_text": "Docling",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "LiteLLM",
+              "raw_text": "LiteLLM",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Phoenix",
+              "raw_text": "Phoenix",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Vector Databases",
+              "raw_text": "semantic search technologies (vector databases, embeddings, RAG systems)",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Embeddings",
+              "raw_text": "semantic search technologies (vector databases, embeddings, RAG systems)",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "RAG",
+              "raw_text": "semantic search technologies (vector databases, embeddings, RAG systems)",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Evaluation",
+              "raw_text": "measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "Observability",
+              "raw_text": "observability and monitoring solutions for AI systems",
+              "requirement": "nice_to_have"
+            },
+            {
+              "alternative_group": null,
+              "canonical": "MCP",
+              "raw_text": "MCP (Model Context Protocol) servers for extending AI capabilities",
+              "requirement": "nice_to_have"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "projects": [
+    {
+      "end_time": null,
+      "error_rate": 0.0,
+      "extra": {
+        "metadata": {
+          "execution_mode": "live",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "model": "claude-sonnet-4-6",
+          "num_repetitions": 1,
+          "prompt_schema_sha256": "5a2f45d3b3e929ae2a5119804744ffed1ab629ab59ed61c455dfb18802b1d1d1"
+        }
+      },
+      "id": "project-1",
+      "name": "jd-skill-extraction-baseline-41c02b3b",
+      "reference_dataset_id": "dataset-1",
+      "run_count": 20,
+      "start_time": "2026-08-21T04:23:12.608311+00:00"
+    },
+    {
+      "end_time": null,
+      "error_rate": 0.05,
+      "extra": {
+        "metadata": {
+          "execution_mode": "live",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "model": "claude-sonnet-4-6",
+          "num_repetitions": 1,
+          "prompt_schema_sha256": "58b3f671571d017abc459ad24f48a810a63292a463123783c87719fc0f00acfb"
+        }
+      },
+      "id": "project-2",
+      "name": "jd-skill-extraction-baseline-bfcc332e",
+      "reference_dataset_id": "dataset-1",
+      "run_count": 20,
+      "start_time": "2026-08-20T13:40:40.146509+00:00"
+    }
+  ],
+  "runs": [
+    {
+      "end_time": "2026-08-21T04:23:50.531000+00:00",
+      "error": null,
+      "extra": {
+        "metadata": {
+          "example_version": "2026-08-19T04:49:01.592Z",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "ls_example_id": "golden_001",
+          "model": "claude-sonnet-4-6"
+        }
+      },
+      "id": "run-3",
+      "inputs": {
+        "job_description": "Junior AI Engineer (m/f/d)\n\nProfile:\nDegree in computer science, machine learning, data engineering, or a related field.\nExperience: First practical experience (e.g. internship, student project, open source) with data and AI, machine learning, or software development.\nProficiency in Python and familiarity with cloud platforms (GCP, AWS, or Azure).\nInterest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).\nBonus: Familiarity with ML libraries (e.g. Hugging Face, LangChain) or DevOps tools (e.g. Docker).\nLanguages: Strong English skills; German is a plus.\nWork Eligibility: A valid work permit for Germany.\n\nWhy ARTEFACT?\nWork on real data and AI projects with leading clients from day one.\nGrow your career with mentoring, internal workshops, and certifications from partners like Google & Amazon.\nBe part of an international team with strong team spirit, flat hierarchies, and a culture of learning.\nAttractive benefits: hybrid work, flexible hours, 1 additional day off for your birthday, Christmas & New Year's Eve off, mental health support, 4 weeks of workation, corporate benefits, office brunch, team events, and more."
+      },
+      "name": "<lambda>",
+      "outputs": {
+        "company": "Artefact",
+        "non_skill_mentions": [
+          {
+            "category": "qualification",
+            "raw_text": "Degree in computer science, machine learning, data engineering, or a related field",
+            "requirement": "required",
+            "subtype": "education"
+          },
+          {
+            "category": "experience_requirement",
+            "raw_text": "First practical experience (e.g. internship, student project, open source) with data and AI, machine learning, or software development",
+            "requirement": "required"
+          },
+          {
+            "category": "language_requirement",
+            "language": "English",
+            "proficiency": "Strong",
+            "raw_text": "Strong English skills",
+            "requirement": "required"
+          },
+          {
+            "category": "language_requirement",
+            "language": "German",
+            "proficiency": "any",
+            "raw_text": "German is a plus",
+            "requirement": "nice_to_have"
+          },
+          {
+            "category": "eligibility",
+            "raw_text": "A valid work permit for Germany",
+            "requirement": "required"
+          },
+          {
+            "category": "responsibility",
+            "raw_text": "Work on real data and AI projects with leading clients from day one",
+            "requirement": null
+          },
+          {
+            "category": "responsibility",
+            "raw_text": "Grow your career with mentoring, internal workshops, and certifications from partners like Google & Amazon",
+            "requirement": null
+          },
+          {
+            "category": "soft_skill",
+            "raw_text": "Be part of an international team with strong team spirit, flat hierarchies, and a culture of learning",
+            "requirement": "nice_to_have"
+          }
+        ],
+        "seniority": "Junior",
+        "seniority_basis": "stated",
+        "seniority_signal": "Junior AI Engineer (title); \"First practical experience (e.g. internship, student project, open source)\"",
+        "skills": [
+          {
+            "alternative_group": null,
+            "canonical": "Python",
+            "raw_text": "Python",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "GCP",
+            "raw_text": "GCP",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "AWS",
+            "raw_text": "AWS",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "Microsoft Azure",
+            "raw_text": "Azure",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LLMs",
+            "raw_text": "LLMs",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Prompt engineering",
+            "raw_text": "Prompt Engineering",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "RAG",
+            "raw_text": "Retrieval-Augmented Generation (RAG)",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-2",
+            "canonical": "Hugging Face",
+            "raw_text": "Hugging Face",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": "alt-2",
+            "canonical": "LangChain",
+            "raw_text": "LangChain",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Docker",
+            "raw_text": "Docker",
+            "requirement": "nice_to_have"
+          }
+        ],
+        "summary": "Artefact is hiring a Junior AI Engineer in Berlin to work on real data and AI projects with leading clients. The role requires a background in computer science or related fields, Python proficiency, and interest in LLMs, Prompt Engineering, and RAG.",
+        "title": "Junior AI Engineer (m/f/d)"
+      },
+      "project_id": "project-1",
+      "reference_example_id": "example-2",
+      "start_time": "2026-08-21T04:23:32.214001+00:00",
+      "status": "success"
+    },
+    {
+      "end_time": "2026-08-20T13:41:18.434000+00:00",
+      "error": "captured LangSmith run error",
+      "extra": {
+        "metadata": {
+          "example_version": "2026-08-19T04:49:01.592Z",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "ls_example_id": "golden_001",
+          "model": "claude-sonnet-4-6"
+        }
+      },
+      "id": "run-1",
+      "inputs": {
+        "job_description": "Junior AI Engineer (m/f/d)\n\nProfile:\nDegree in computer science, machine learning, data engineering, or a related field.\nExperience: First practical experience (e.g. internship, student project, open source) with data and AI, machine learning, or software development.\nProficiency in Python and familiarity with cloud platforms (GCP, AWS, or Azure).\nInterest in data, LLMs, Prompt Engineering, or Retrieval-Augmented Generation (RAG).\nBonus: Familiarity with ML libraries (e.g. Hugging Face, LangChain) or DevOps tools (e.g. Docker).\nLanguages: Strong English skills; German is a plus.\nWork Eligibility: A valid work permit for Germany.\n\nWhy ARTEFACT?\nWork on real data and AI projects with leading clients from day one.\nGrow your career with mentoring, internal workshops, and certifications from partners like Google & Amazon.\nBe part of an international team with strong team spirit, flat hierarchies, and a culture of learning.\nAttractive benefits: hybrid work, flexible hours, 1 additional day off for your birthday, Christmas & New Year's Eve off, mental health support, 4 weeks of workation, corporate benefits, office brunch, team events, and more."
+      },
+      "name": "<lambda>",
+      "outputs": {},
+      "project_id": "project-2",
+      "reference_example_id": "example-2",
+      "start_time": "2026-08-20T13:41:00.712001+00:00",
+      "status": "error"
+    },
+    {
+      "end_time": "2026-08-21T04:29:41.064000+00:00",
+      "error": null,
+      "extra": {
+        "metadata": {
+          "example_version": "2026-08-18T07:41:37.577Z",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "ls_example_id": "golden_003",
+          "model": "claude-sonnet-4-6"
+        }
+      },
+      "id": "run-4",
+      "inputs": {
+        "job_description": "Agentic AI Engineer (m/f/d)\nMercanis \u00b7 Berlin, Berlin, Germany (On-site)\n\nAbout the job\n\nYour mission at Mercanis\n\nAt Mercanis, we are building the Agentic AI Procurement Suite that powers the procurement of tomorrow, digital, transparent, and intelligent.\n\nWe are looking for an experienced Agentic AI Engineer to join our growing AI team. In this role, you will design, build, and optimize agentic AI systems that automate complex procurement workflows and power intelligent decision-making across our platform.\n\nYou will work with cutting-edge technologies in Python, LangGraph, and AWS, integrating and fine-tuning models from leading providers such as OpenAI, Anthropic, and AWS Bedrock.\n\nYour work will have a direct impact on how organizations streamline their procurement processes and leverage AI for strategic advantage.\n\nYour Responsibilities On This Role\n\n\u2022 Strong professional experience in Python software development\n\u2022 Proven experience building AI-driven or agentic systems, preferably with LangGraph or similar frameworks\n\u2022 Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data\n\u2022 Hands-on experience working with LLM providers such as OpenAI, Anthropic, or AWS Bedrock\n\u2022 Familiarity with cloud-based deployment and scaling, ideally using AWS services\n\u2022 Strong problem-solving skills with a focus on maintainable, efficient, and scalable code\n\u2022 A collaborative mindset and comfort working remotely with distributed teams\n\u2022 Curiosity, adaptability, and a passion for staying ahead in the evolving world of AI\n\u2022 Bonus: Experience with semantic search technologies (vector databases, embeddings, RAG systems)\n\u2022 Bonus: Strong background in measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking\n\u2022 Bonus: Experience implementing observability and monitoring solutions for AI systems to track quality and iterate on improvements\n\u2022 Bonus: Experience building or integrating MCP (Model Context Protocol) servers for extending AI capabilities\n\u2022 Bonus: Knowledge of agent-to-agent (A2A) communication patterns and multi-agent system architectures\n\nRole Requirements\n\nTech stack you will work with:\n\n\u2022 Languages: Python\n\u2022 Frameworks & Tools: LangGraph & related LLM orchestration tools, Docling, LiteLLM, Phoenix\n\u2022 Infrastructure: AWS (Lambda, S3, ECS, and more)\n\u2022 Models: OpenAI, Anthropic, AWS Bedrock, and other foundation model providers"
+      },
+      "name": "<lambda>",
+      "outputs": {
+        "company": "Mercanis",
+        "non_skill_mentions": [],
+        "seniority": "Senior",
+        "seniority_basis": "inferred",
+        "seniority_signal": "experienced Agentic AI Engineer / Proven experience building AI-driven or agentic systems",
+        "skills": [
+          {
+            "alternative_group": null,
+            "canonical": "Python",
+            "raw_text": "Python",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LangGraph",
+            "raw_text": "LangGraph",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS",
+            "raw_text": "AWS",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "OpenAI API",
+            "raw_text": "OpenAI",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "Anthropic API",
+            "raw_text": "Anthropic",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "AWS Bedrock",
+            "raw_text": "AWS Bedrock",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LLMs",
+            "raw_text": "Large Language Models (LLMs)",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "APIs",
+            "raw_text": "external APIs",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS Lambda",
+            "raw_text": "AWS Lambda",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS S3",
+            "raw_text": "AWS S3",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS ECS",
+            "raw_text": "AWS ECS",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Docling",
+            "raw_text": "Docling",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LiteLLM",
+            "raw_text": "LiteLLM",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Phoenix",
+            "raw_text": "Phoenix",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "RAG",
+            "raw_text": "semantic search technologies (vector databases, embeddings, RAG systems)",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Vector Databases",
+            "raw_text": "vector databases",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Embeddings",
+            "raw_text": "embeddings",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Observability",
+            "raw_text": "observability and monitoring solutions for AI systems",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Model Context Protocol",
+            "raw_text": "MCP (Model Context Protocol) servers",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Multi-Agent Systems",
+            "raw_text": "agent-to-agent (A2A) communication patterns and multi-agent system architectures",
+            "requirement": "nice_to_have"
+          }
+        ],
+        "summary": "Mercanis is looking for an experienced Agentic AI Engineer to design, build, and optimize agentic AI systems that automate complex procurement workflows. The role involves working with Python, LangGraph, AWS, and integrating/fine-tuning models from providers such as OpenAI, Anthropic, and AWS Bedrock.",
+        "title": "Agentic AI Engineer"
+      },
+      "project_id": "project-1",
+      "reference_example_id": "example-1",
+      "start_time": "2026-08-21T04:29:23.511001+00:00",
+      "status": "success"
+    },
+    {
+      "end_time": "2026-08-20T13:47:06.959000+00:00",
+      "error": null,
+      "extra": {
+        "metadata": {
+          "example_version": "2026-08-18T07:41:37.577Z",
+          "fixture_count": 20,
+          "fixture_manifest_sha256": "f9bdfca728b4f8116091e499879df043a8039661477cb604a8705a040f3f9445",
+          "ls_example_id": "golden_003",
+          "model": "claude-sonnet-4-6"
+        }
+      },
+      "id": "run-2",
+      "inputs": {
+        "job_description": "Agentic AI Engineer (m/f/d)\nMercanis \u00b7 Berlin, Berlin, Germany (On-site)\n\nAbout the job\n\nYour mission at Mercanis\n\nAt Mercanis, we are building the Agentic AI Procurement Suite that powers the procurement of tomorrow, digital, transparent, and intelligent.\n\nWe are looking for an experienced Agentic AI Engineer to join our growing AI team. In this role, you will design, build, and optimize agentic AI systems that automate complex procurement workflows and power intelligent decision-making across our platform.\n\nYou will work with cutting-edge technologies in Python, LangGraph, and AWS, integrating and fine-tuning models from leading providers such as OpenAI, Anthropic, and AWS Bedrock.\n\nYour work will have a direct impact on how organizations streamline their procurement processes and leverage AI for strategic advantage.\n\nYour Responsibilities On This Role\n\n\u2022 Strong professional experience in Python software development\n\u2022 Proven experience building AI-driven or agentic systems, preferably with LangGraph or similar frameworks\n\u2022 Solid understanding of Large Language Models (LLMs) and their integration with external APIs or structured data\n\u2022 Hands-on experience working with LLM providers such as OpenAI, Anthropic, or AWS Bedrock\n\u2022 Familiarity with cloud-based deployment and scaling, ideally using AWS services\n\u2022 Strong problem-solving skills with a focus on maintainable, efficient, and scalable code\n\u2022 A collaborative mindset and comfort working remotely with distributed teams\n\u2022 Curiosity, adaptability, and a passion for staying ahead in the evolving world of AI\n\u2022 Bonus: Experience with semantic search technologies (vector databases, embeddings, RAG systems)\n\u2022 Bonus: Strong background in measuring, evaluating, and optimizing AI system performance with clear metrics and benchmarking\n\u2022 Bonus: Experience implementing observability and monitoring solutions for AI systems to track quality and iterate on improvements\n\u2022 Bonus: Experience building or integrating MCP (Model Context Protocol) servers for extending AI capabilities\n\u2022 Bonus: Knowledge of agent-to-agent (A2A) communication patterns and multi-agent system architectures\n\nRole Requirements\n\nTech stack you will work with:\n\n\u2022 Languages: Python\n\u2022 Frameworks & Tools: LangGraph & related LLM orchestration tools, Docling, LiteLLM, Phoenix\n\u2022 Infrastructure: AWS (Lambda, S3, ECS, and more)\n\u2022 Models: OpenAI, Anthropic, AWS Bedrock, and other foundation model providers"
+      },
+      "name": "<lambda>",
+      "outputs": {
+        "company": "Mercanis",
+        "non_skill_mentions": [],
+        "seniority": "Senior",
+        "seniority_basis": "inferred",
+        "seniority_signal": "experienced / Proven experience building AI-driven or agentic systems",
+        "skills": [
+          {
+            "alternative_group": null,
+            "canonical": "Python",
+            "raw_text": "Python",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LangGraph",
+            "raw_text": "LangGraph",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS",
+            "raw_text": "AWS",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LLMs",
+            "raw_text": "Large Language Models (LLMs)",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "OpenAI API",
+            "raw_text": "OpenAI",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "Anthropic API",
+            "raw_text": "Anthropic",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": "alt-1",
+            "canonical": "AWS Bedrock",
+            "raw_text": "AWS Bedrock",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS Lambda",
+            "raw_text": "AWS Lambda",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS S3",
+            "raw_text": "AWS S3",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "AWS ECS",
+            "raw_text": "AWS ECS",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Docling",
+            "raw_text": "Docling",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "LiteLLM",
+            "raw_text": "LiteLLM",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Phoenix",
+            "raw_text": "Phoenix",
+            "requirement": "required"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "RAG",
+            "raw_text": "semantic search technologies (vector databases, embeddings, RAG systems)",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Vector Databases",
+            "raw_text": "vector databases",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Embeddings",
+            "raw_text": "embeddings",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Observability",
+            "raw_text": "observability and monitoring solutions for AI systems",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Model Context Protocol (MCP)",
+            "raw_text": "MCP (Model Context Protocol) servers",
+            "requirement": "nice_to_have"
+          },
+          {
+            "alternative_group": null,
+            "canonical": "Multi-Agent Systems",
+            "raw_text": "agent-to-agent (A2A) communication patterns and multi-agent system architectures",
+            "requirement": "nice_to_have"
+          }
+        ],
+        "summary": "Mercanis is looking for an experienced Agentic AI Engineer to design, build, and optimize agentic AI systems that automate complex procurement workflows and power intelligent decision-making. The role involves working with Python, LangGraph, AWS, and integrating/fine-tuning models from providers such as OpenAI, Anthropic, and AWS Bedrock.",
+        "title": "Agentic AI Engineer"
+      },
+      "project_id": "project-2",
+      "reference_example_id": "example-1",
+      "start_time": "2026-08-20T13:46:49.766001+00:00",
+      "status": "success"
+    }
+  ],
+  "source": {
+    "captured_project_count": 2,
+    "captured_run_count": 4,
+    "dataset_name": "jd-skill-extraction-golden-v1",
+    "external_writes": 0
+  }
+}
