@@ -7,5 +7,5 @@ hand-triggered pipeline (Gmail testing-mode login expires every 7 days).
 
 Does NOT: send email; canonicalize company/role names; guess between >=2
 candidate ads (returns None instead); write to the `job` table. See
-sigma/specs/email-parser/spec.md for the full contract.
+PLAN-email-parser.md for the full contract.
 """

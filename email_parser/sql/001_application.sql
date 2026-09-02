@@ -1,6 +1,6 @@
 -- email_parser migration (T5) — the `application` table.
 --
--- Verbatim from spec §4 (sigma/specs/email-parser/spec.md). No local DDL creds
+-- Verbatim from the data model in PLAN-email-parser.md. No local DDL creds
 -- (repo pattern): a PERSON runs this in the Supabase SQL editor. Do not run it
 -- from code. RLS mirrors `job`: PUBLIC READ ONLY — every write goes through the
 -- service-role key (no insert/update/delete policy exists).

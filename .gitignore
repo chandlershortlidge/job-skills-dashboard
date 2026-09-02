@@ -224,6 +224,13 @@ scratch/screenshots/*
 # Local resumes (personal CVs — never commit to the public repo)
 scratch/resumes/
 
+# Disposable local probes — tracked scratch scripts remain tracked, but new probes
+# must not accumulate as untracked repository changes.
+scratch/*
+!scratch/screenshots/
+scratch/screenshots/*
+!scratch/screenshots/.gitkeep
+
 # Gmail OAuth secrets (email_parser) — never commit
 email_parser/.gmail_token.json
 email_parser/.gmail_credentials.json

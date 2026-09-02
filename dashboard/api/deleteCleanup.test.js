@@ -1,8 +1,7 @@
-// Tests for the storage cleanup added to the delete routes (api/job.js,
-// api/cv.js) in step 5 of source-file-storage-plan.md — Supabase mocked, no
-// network. Locks: row delete also removes the stored file by deterministic
-// prefix (even when the path column was null), and a storage failure never
-// fails the row delete.
+// Tests for the storage cleanup contract in storage-blueprint.md — Supabase
+// mocked, no network. Locks: row delete also removes the stored file by
+// deterministic prefix (even when the path column was null), and a storage
+// failure never fails the row delete.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 const supa = {

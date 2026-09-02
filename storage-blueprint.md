@@ -1,9 +1,8 @@
 # Blueprint: Source-File Storage v1
 
-Architecture for `source-file-storage-plan.md` (the chosen approach — no
-`proposals.md` stage ran; the plan was drafted and reviewed directly). Folds in
-the round-1 grill findings (F1–F6). This is the design; the plan holds scope
-and sequencing.
+Durable architecture and behavioral contract for source-file storage v1. It
+folds in the round-1 grill findings (F1–F6) and records the boundaries that the
+shipped implementation must continue to preserve.
 
 ## Components
 
@@ -80,12 +79,12 @@ stored file for that row; no file remains reachable after row delete."
 - **D1 (resolves F1): no public CV retrieval in v1.** The app has no login, cv
   ids are small sequential integers — an unauthenticated `kind=cv` route would
   let anyone enumerate and download every stored résumé; the private bucket
-  would be privacy theater. v1 has no CV UI anyway (plan: capture-only), so
+  would be privacy theater. v1 has no CV UI and remains capture-only, so
   `api/file.js` allowlists `screenshot` only. Screenshots are public job
   postings — enumerable, but nothing sensitive. CV retrieval ships with the
-  tailored-résumé feature once an access story exists. **Plan-text change:**
-  the CV DoD line "retrievable through the signed-URL route" becomes "stored
-  and verified via a service-role probe."
+  tailored-résumé feature once an access story exists. Stored CV files are
+  verified through a service-role probe, never through the public signed-URL
+  route.
 - **D2 (resolves F2):** upload is response-critical, not post-response — Vercel
   freezes work scheduled after `res.json`. Latency cost ~one storage PUT,
   accepted.
@@ -101,18 +100,12 @@ stored file for that row; no file remains reachable after row delete."
 |------|-----------|
 | Screenshot signed URLs enumerable via job ids | Accepted: content = public job ads. Revisit if anything sensitive ever lands in `screenshots/` |
 | Upload adds latency to the drop-in path | One PUT of bytes already in memory; measure on deployed verify, acceptable within Vercel's 300 s ceiling |
-| Preview deploys write to prod storage | Same discipline as DB: throwaway uploads, delete after (plan pitfall retained) |
+| Preview deploys write to prod storage | Same discipline as DB: use throwaway uploads and delete them afterward |
 | `sourceStore.js` lands in `api/` and becomes an accidental route | It exports no default handler, so invocation 404s/errors harmlessly — same situation as `canonicalMap.js` today |
 | Orphaned files from partial failures | Deterministic prefixes + delete-time `removeByPrefix` + insert-failure cleanup (ordering contracts above) |
 
-## Domain ownership
+## Status
 
-Plain web/backend engineering — none of sigma's configured domains
-(`ai-agent-engineering`, `llm-engineering`) apply; no LLM call is added or
-changed. Standard review axis: code only.
-
-## Next
-
-`/grill --target blueprint`, then fold D1's plan-text change into
-`source-file-storage-plan.md` before step 2 begins. Step 1 (manual SQL) is
-unchanged by this blueprint.
+Implemented and production-verified on 2026-07-10. See `DECISIONS.md` for the
+verification record. Future changes must preserve D1's screenshot-only public
+read path unless an authenticated CV access model is designed first.
