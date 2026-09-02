@@ -15,6 +15,432 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-02 — Evaluate examples by independent technical identity
+
+When a broad technical capability introduces examples, retain the broad capability and
+evaluate every example independently. Extract only examples that are distinct, stable,
+and independently résumé-matchable technologies, frameworks, architectures, named methods,
+or technical capabilities; exclude wording that merely decomposes or explains the parent.
+
+Golden 006 therefore retains `Agents` and adds `ReAct`, while Tool Use and
+Chain-of-Thought remain explanatory in that construction. Example syntax alone neither
+creates an alternative group nor makes every component a skill.
+
+## 2026-09-02 — Preserve Golden 018’s nested technical specificity
+
+Golden 018 retains concrete agent, operations, storage, and cheminformatics practices
+when they are independently résumé-matchable. `Multi-step reasoning` remains its own
+capability and does not become `Prompt engineering`.
+
+Group only genuine substitutes: `FastAPI`/`Flask`, `PostgreSQL`/`MySQL`, and the
+explicitly “and/or” storage choices `SQL`/`Object Storage`/`NoSQL`. Keep `MLOps` and
+`LLMOps` independent, with directional `LLMOps` → `MLOps`; do not add a global
+`MCP` → `LLMs` implication.
+
+## 2026-09-01 — Keep explicit ML lifecycle stages and deep-learning choices distinct
+
+Candidate-facing expertise in machine-learning algorithms, model development, and model
+deployment yields `Machine Learning`, `Model Development`, and `AI deployment` as separate
+criteria. A requested `Deep Learning` framework capability remains alongside grouped
+interchangeable `TensorFlow` and `PyTorch` examples; either framework implies the broad
+capability, never the reverse. Explicit containerized-workload knowledge retains
+`Containerization` alongside `Kubernetes`, and both Kubernetes and Docker directionally
+imply Containerization at match time.
+
+## 2026-09-01 — Preserve distinct Golden 016 platform and framework criteria
+
+Candidate requirements for `Applied AI or Machine Learning` retain `AI/ML` and
+`Machine Learning` as one explicit alternative. Competing agent-development frameworks
+(`LangGraph`, `Google ADK`, `Agno`) and AI-evaluation frameworks (`Ragas`, `LangSmith`)
+each form one alternative criterion, while heterogeneous Google Cloud stack examples
+remain independent skills. Generic `grounding` terminology is supporting evidence rather
+than a standalone résumé skill, and responsibility-only RAG remains excluded. At match
+time the named agent and evaluation frameworks imply their broad capabilities, `Vertex AI`
+implies `GCP`, and `Gemini` implies `LLMs`; none of those implications run in reverse.
+
+## 2026-09-01 — Separate broad AI/ML and coding-tool experience from adjacent skills
+
+Use `AI/ML` as the scalable broad canonical for wording such as “AI/ML” or “AI/ML
+ecosystem”; keep explicitly requested `Machine Learning` distinct. Candidate-facing LLM
+integration retains both `LLMs` and the independently résumé-matchable `AI Integration`
+practice. Reconcile Golden 009’s broad AI/ML label under the same rule.
+
+`Coding agents` describes `AI developer tooling`, not the separate `Agents` capability
+requested by “agentic systems.” `Claude Code`, `Codex`, `Cursor`, and `GitHub Copilot`
+remain distinct products that directionally imply the broad tooling category at match time;
+the broad category never satisfies a named-product requirement.
+
+## 2026-09-01 — Group interchangeable framework examples without collapsing practices
+
+Concrete examples remain extracted, but competing products or frameworks share an alternative
+group when any one fully satisfies the same requested capability. Golden 014 therefore groups
+`LangChain` and `LlamaIndex`; `FastAPI` remains additive because the JD requests it “plus” an
+AI framework. Apply the same LangChain/LlamaIndex grouping when Golden 009 is reconciled.
+
+This refines the earlier blanket treatment of illustrative examples as independently scored.
+Distinct technical practices such as `RAG` and `Prompt engineering` remain separate criteria;
+example syntax alone neither groups nor separates skills—the semantic requirement does.
+
+## 2026-08-31 — Reject empty-skill results from live JD uploads
+
+Live JD uploads require at least one technical skill after deterministic normalization.
+Empty-skill output remains valid diagnostic evidence in no-write Golden/eval runs, but it
+is not a useful dashboard record, so `/api/extract` returns 422 before Storage or database
+writes. Company and title remain nullable for partial screenshots.
+
+## 2026-08-31 — Treat interchangeable AI coding tools as one criterion
+
+When a broad AI-development-tool phrase only introduces interchangeable named products,
+and any one product fully satisfies the requirement, omit the duplicate broad row and place
+the products in one alternative group. Golden 013 therefore groups `Claude Code`, `Codex`,
+`Cursor`, and `GitHub Copilot` as substitutes.
+
+This is a contextual exception to the parent-plus-concrete-example policy; independently
+requested examples such as Golden 009’s tooling remain separately scored.
+
+## 2026-08-31 — Keep Golden 012 engineering evidence under one criterion
+
+Golden 012’s explicit engineering foundation yields `Software engineering`; building
+automations or integrations and solid debugging/testing practices explain that foundation
+rather than adding separate scoring criteria. Its independently named applied-AI practices
+remain separate skills. Normalize `AI Security Guardrails` to the existing
+`security guardrails` canonical because both labels describe the same requested practice.
+
+## 2026-08-31 — Treat dedicated Tech Stack sections as candidate requirements
+
+A standalone candidate-facing Tech Stack section is an implicit technical requirement even
+without a “must know” verb: extract its concrete, independently résumé-matchable technologies
+as required unless the section explicitly marks them optional. Continue excluding technologies
+mentioned only incidentally inside responsibilities or company/environment narrative.
+
+For Golden 011, retain the dedicated stack and add `APIs` from `LLM APIs`; also retain
+candidate-facing `Recommender Systems`, `Data Platforms`, and `ML Engineering` from the
+“highly relevant” experience list as nice-to-have. Existing SQL/NoSQL and AWS/Azure/GCP
+alternative groups each remain one scoring criterion, regardless of how many members match.
+`Spark/PySpark` likewise preserves both canonical identities in one alternative group, so
+either résumé skill satisfies the stack criterion without double-counting it.
+
+## 2026-08-31 — Use thresholds instead of exact passes during Golden review
+
+Run each Golden once against a frozen prompt, keep every residual error visible, and do not
+retry or patch isolated stochastic misses merely to force an exact pass. Individual-Golden
+scores are diagnostics, not percentage gates: small fixtures otherwise require accidental
+perfection because one miss changes their rate sharply. Invalid structured output, a major
+regression, or an error exposing a wrong product policy remains a hard stop.
+
+After all 20 Goldens are reviewed, run the complete suite once against one frozen prompt and
+require aggregate canonical precision of at least 95%, canonical recall of at least 90%, and
+requirement and alternative-group accuracy of at least 95%. Compare aggregate and per-Golden
+scores with the original baseline, then prioritize recurring or high-impact error classes.
+Golden 007’s API requirement mismatch and Golden 010’s Reasoning Chains miss remain recorded
+residual evidence rather than blocking continued review.
+
+## 2026-08-29 — Keep illustrative examples independent and separate proficiency from modality
+
+An explicitly requested broad capability remains alongside concrete, independently
+résumé-matchable examples without grouping merely because the list is illustrative.
+Golden 009 therefore retains `LLM orchestration`, `LangChain`, `LlamaIndex`, `AI developer
+tooling`, and `Cursor`, while vague descriptions remain excluded. Fine-tuning scoped by an
+LLM-experience list means model adaptation; fine-tuning an application pipeline does not.
+
+Assign `required` versus `nice_to_have` from the section and explicit optional wording,
+not from proficiency-depth words. “Familiarity” inside an unqualified required Profile or
+Requirements list remains required unless preferred, plus, bonus, optional, or equivalent
+language makes it nice-to-have; this applies to skills and non-skill audit mentions.
+
+## 2026-08-29 — Let required mentions determine a repeated skill’s requirement
+
+When the same canonical skill appears at multiple candidate-facing requirement levels,
+any required occurrence makes the single deduplicated criterion required. Golden 007’s
+Core “LLM APIs” requirement therefore makes `APIs` required; the later nice-to-have
+“API integrations” mention cannot downgrade it.
+
+## 2026-08-29 — Retain explicit platform parents and exclude bundled compliance awareness
+
+When candidate-facing text explicitly requests a meaningful broad platform category and
+names concrete choices, retain both: “modern cloud based AI platforms (GCP/AWS)” yields
+`Cloud` plus grouped `GCP` and `AWS`. Bundled familiarity with data or AI security,
+regulations, and privacy requirements remains qualification/domain knowledge unless the
+JD requests hands-on implementation or operation of a named security technology or
+technical security practice.
+
+## 2026-08-29 — Treat explicitly named deployment modes as skills
+
+Candidate-facing deployment requirements that explicitly name containers or
+containerization yield `Containerization`, and those that name serverless yield
+`Serverless`. Preserve the stated capability without inventing a concrete product
+such as Docker or AWS Lambda. This revises the August 25 rule that suppressed generic
+deployment forms.
+
+## 2026-08-28 — Apply skill implications at match time across both résumé paths
+
+Keep broad and specific JD skills as independent criteria, then expand résumé evidence
+through one shared, curated, one-way implication function used by both dashboard matching
+and tailoring. A specific skill may satisfy itself and an explicitly requested parent;
+the parent never satisfies the child, and set-based expansion satisfies each parent at
+most once. Do not persist inferred résumé skills: remove the synthetic `LLMs` workaround
+and ignore only its exact legacy marker when saved résumés are read.
+
+Golden 006 remains a contextual exception to the general example policy: in “Agentic
+Coding Patterns (e.g., ReAct, Tool Use, Chain-of-Thought),” those examples explain
+`Agents` and are not separate requirements. They remain eligible when a JD requests
+them independently in another construction.
+
+## 2026-08-28 — Preserve concrete examples as independently scored skills
+
+Candidate-facing examples introduced by “e.g.,” “such as,” parentheses, or similar
+wording remain skills when they are concrete and independently résumé-matchable; keep
+the requested broad capability too when it is itself meaningful. Vague descriptions,
+maturity evidence, and responsibilities-only technologies remain excluded. Each retained
+example scores independently unless the source states a genuine closed alternative. This
+revises the August 25 nested-example rules and the August 27 provider-example suppression;
+`alternative_group` remains reserved for explicit alternatives, not parent/example links.
+
+## 2026-08-28 — Match specific skills upward without collapsing requirements
+
+Résumé matching may use a curated one-way implication when a specific skill is reliable
+evidence of a broader one, such as `RAG` → `LLMs`; the reverse never applies. Broad and
+specific JD skills remain separate scoring criteria, so RAG can satisfy both an explicit
+RAG requirement and an explicit LLM requirement without satisfying Prompt Engineering.
+Implications are matching metadata, not aliases, extraction output, persisted résumé
+skills, scoring groups, or alternatives, and only globally safe relationships qualify.
+
+## 2026-08-28 — Separate engineering capabilities from maturity evidence
+
+An explicit `Software engineering` requirement retains separately named specialized
+capabilities such as `API Design`, data modeling, async processing, and distributed
+systems. Clean code, comprehensive testing, performance optimization, and error handling
+remain maturity evidence when they only explain broader Python or engineering proficiency;
+standalone expertise requirements still qualify. Broad AI/LLM application-type lists do
+not promote generic workflow examples, while top-level workflow requirements remain skills.
+Practical API use, including building features that call models through APIs, yields `APIs`.
+
+## 2026-08-27 — Distinguish API Design and expose explicit Software engineering requirements
+
+`APIs` covers calling, consuming, or integrating APIs; designing API contracts,
+interfaces, architecture, or boundaries is the distinct `API Design` skill. Extract
+`Software engineering` when candidate-facing text explicitly requires software-
+engineering skills, fundamentals, expertise, or a strong hands-on background. Do not
+infer it from production-quality descriptors, responsibilities, or mere participation
+in software projects. This revises Golden 004 and the 2026-08-24 blanket exclusion.
+
+## 2026-08-27 — Keep explicit workflow automation and suppress nested API providers
+
+An explicitly required `workflow automation` capability remains a distinct technical
+skill alongside `Agents`; Golden 007 names both under “Core,” so its reference includes
+both. Provider names nested as examples of a requested broad API category remain context:
+“LLM APIs (OpenAI, Anthropic, etc.)” yields `LLMs`, not separate `OpenAI` or `Anthropic`.
+This does not suppress provider tools when candidate-facing text requests them directly.
+
+## 2026-08-25 — Preserve requested parent categories over nested examples
+
+Within an explicitly required or preferred list, distinguish top-level requested members
+from examples nested inside one member. Extract every top-level member, but when a broad
+technical category is followed by an “e.g.” list, retain the broad category and do not add
+or substitute its nested examples unless they are independently requested. Thus “Experience
+with MCP, vector databases (e.g. Elasticsearch, pgvector), or AI observability tools” yields
+`MCP`, `Vector Databases`, and `Observability`, not `Elasticsearch` or `pgvector`.
+
+## 2026-08-25 — Reserve Fine-tuning for model adaptation and recognize deployed APIs
+
+Extract `Fine-tuning` only when candidate-facing text clearly means model adaptation,
+such as fine-tuning an LLM/model, updating model weights, or training adapters/LoRA.
+Tuning, optimizing, or evaluating an LLM/application pipeline is pipeline work, not
+model fine-tuning; Golden 006 therefore does not expect `Fine-tuning`. Candidate-facing
+familiarity with or experience deploying AI applications via named APIs yields `APIs`.
+Generic deployment forms such as containers or serverless are not standalone skills
+unless a concrete technology or product is named.
+
+## 2026-08-25 — Keep illustrative pattern examples under their broader skill
+
+An “e.g.” list that explains one broader candidate requirement is evidence for that
+broader skill, not a set of independently scored skills. Golden 006’s “Agentic Coding
+Patterns (e.g., ReAct, Tool Use, Chain-of-Thought)” therefore yields `Agents` only, not
+separate `Tool calling`, `ReAct`, or `Chain-of-Thought`. This does not change the named-
+tool-list rule: when candidate-facing text directly requires or prefers knowledge of or
+experience with a named list of technical tools, each named tool remains a skill.
+
+## 2026-08-24 — Treat named candidate tool lists as explicit skill requirements
+
+When candidate-facing text requires or prefers knowledge of, experience with, familiarity
+with, proficiency in, or hands-on use of a named list of technical tools, extract every
+named tool even when the list is parenthetical or follows a broad phrase such as “related
+technical tools.” A provider name in that context is a requested tool, not merely an
+illustrative provider example; preserve the stated specificity (`OpenAI`, not `OpenAI API`).
+
+## 2026-08-24 — Enforce the vision model schema at runtime
+
+Vision extraction is a strict runtime contract. Reject refusals, token truncation, missing
+fields, and malformed fields before normalization; never convert invalid model output into
+empty skill or audit arrays. Provider diagnostics remain outside the public job shape and
+are exposed only to explicit diagnostic callers. Size the output ceiling against the current
+golden corpus, with no automatic retries.
+
+## 2026-08-24 — Separate extracted skill concepts from final canonical identity
+
+JD models emit `extracted_skill`: one semantic skill concept supported by `raw_text`, not
+an authoritative library identity. Deterministic normalization alone emits the downstream
+`canonical`; known variants use the global map, while unknown concepts remain provisional
+pass-through canonicals so the library can keep expanding. Final API, database, dashboard,
+golden, and scoring contracts stay canonical-only; offline normalization must dual-read the
+legacy model-side `canonical` field without rewriting existing extraction data.
+
+## 2026-08-24 — Ground skills in candidate requirements, not role responsibilities
+
+Technical skills must be supported by candidate-facing qualification or experience text,
+not inferred from descriptions of what the hire will do. When the same concept appears in
+both places, use the qualification as `raw_text`; keep the duty in `non_skill_mentions` as
+a responsibility, which does not establish a required or nice-to-have skill level.
+
+## 2026-08-24 — Record every extraction-prompt behavior change as product policy
+
+Any change that alters what the extraction prompt includes, excludes, splits, or
+canonicalizes must be recorded here with the reason. Scratch output remains the behavioral
+evidence, but the durable rationale belongs in this log so later prompt work does not
+silently undo an earlier Golden-fixture decision.
+
+## 2026-08-24 — Preserve JD specificity and recognize broad Agents semantically
+
+Do not invent API/product suffixes or emit example providers and child services as
+standalone skills unless the candidate-facing requirement asks for them explicitly; keep
+the stated broad platform instead. Explicit experience with agentic or agent-based AI
+systems maps to `Agents` regardless of phrasing, while requested specializations such as
+`Multi-Agent Systems` remain separate skills.
+
+## 2026-08-24 — Keep only high-signal skills from generic development-workflow lists
+
+From Golden 004's generic software-development workflow list, retain `Git` and `CI/CD` but
+do not track `Issue Tracking`, `Code Review`, or `Test Automation` as separate market-signal
+skills. Exclude those generic practices rather than falsely aliasing them upward to Git or
+CI/CD; this contextual rule does not suppress a standalone testing-expertise requirement.
+Broad software-engineering or production-building experience remains experience evidence,
+not a `Software Engineering` skill; named technologies still require candidate-facing evidence.
+
+## 2026-08-24 — Extract semantic AI requirements without promoting every example
+
+Candidate-facing experience with AI/LLM applications yields `LLMs`; explicitly named
+agent and retrieval-based application specializations yield `Agents` and `RAG`; defining
+AI evaluations or quality criteria yields `Evaluation`. Generic workflow automation,
+copilots, and productivity-tool examples do not become skills merely because they share
+the same list.
+
+## 2026-08-21 — Keep specialized skills distinct in an expansive canonical library
+
+The canonical skill library should grow with distinct technical concepts rather than
+collapse every specialization into its parent. `Agents` and `Multi-Agent Systems`
+therefore coexist when a JD asks for both; aliases merge lexical variants of the same
+concept, not adjacent or parent/child skills.
+
+## 2026-08-21 — Repair the Artefact contract error narrowly; keep V1 and V2 baselines distinct
+
+The first live 20-JD baseline was **not** a clean quality baseline: Artefact failed
+before scoring because the model returned legacy shorthand
+`category: "domain_knowledge"`. In the agreed taxonomy, `domain_knowledge` is a
+`qualification` subtype, not a top-level category. Do not treat that error-bearing
+run as comparable quality evidence.
+
+We did **not** loosen the contract for arbitrary unknown categories, change the
+golden taxonomy, or re-extract/backfill the corpus. Instead the extractor performs
+one backwards-compatible repair: only the legacy shorthand with no conflicting
+subtype is converted to `qualification` / `domain_knowledge`; a contradictory
+subtype or any other unknown category still fails. The prompt now gives the same
+placement explicitly, and contract plus mocked-extraction tests lock the boundary.
+
+To prove the repair operationally without mixing in a changed answer key, a
+temporary worktree used V1 fixture commit `6878f15` plus only the repair. LangSmith
+experiment `jd-skill-extraction-baseline-41c02b3b` completed **20/20** root runs
+with **0 errors**. Its technical results were 62.25% precision, 57.07% recall,
+97.92% requirement accuracy, and 31.25% alternative-group accuracy. That is the
+clean V1 operational baseline, not a direct comparison with the earlier failed run.
+
+Golden 002 (Cognee) was then corrected locally and synced to LangSmith: SDKs and
+AI Infrastructure are technical skills; `AI agents` maps to `Agents`; `Git`,
+`OpenAI API`, and `Anthropic API` use their JD-supported canonical labels. AI
+Infrastructure was removed from qualification/domain knowledge. Generic
+“notebooks” and “developer tools” remain excluded rather than being over-specific
+inferences. The global alias-map artifacts were regenerated and committed; a probe
+found no existing corpus skill records changed by those aliases.
+
+Next: run a new **V2** 20-JD baseline from current `main`, where remote and local
+Golden 002 now match. Review per-fixture outputs and agree explicit quality gates
+before any corpus-wide re-extraction or taxonomy backfill. The latter remains
+out of scope until those gates pass.
+
+## 2026-08-20 — Keep non-skill evaluation names plain and category reporting lean
+
+The baseline's aggregate source-text metrics are named
+`non_skill_precision` and `non_skill_recall`, rather than the more
+implementation-specific `audit_source_text_*`. The aggregate category label
+metric is `audit_category_label_accuracy`, which makes clear that it measures
+whether a source-text match received the right top-level category.
+
+For diagnosis, the six agreed categories report only precision, recall, and
+support: qualification, experience requirement, soft skill, eligibility,
+language requirement, and responsibility. The scorer retains expected,
+predicted, and matched counts internally so a score can be explained, but does
+not add per-category structural, subtype, or proficiency metrics yet. This
+keeps one 20-JD experiment interpretable while still exposing category-specific
+regressions. Technical-skill metrics and extraction behavior are unchanged.
+
+## 2026-08-19 — Gate the corpus-wide taxonomy backfill on reviewed golden outputs
+
+The richer taxonomy and alternative-group rules already apply to new live JD
+extractions. The existing corpus remains unchanged apart from the Artefact and
+Micro1 backfills; do not bulk re-extract it yet.
+
+The 20-fixture baseline is now operationally clean, but its aggregate scores are
+not enough to authorize a corpus rewrite: audit recall is low and WaveSix returned
+empty skills and audit mentions. Next, review the actual output beside the golden
+expectation for WaveSix, Artefact, and Micro1; turn those into explicit per-case
+must-not-fail rules and metric thresholds; then rerun the goldens. Only a passing
+quality gate authorizes re-extracting/backfilling the corpus and regenerating the
+dashboard data.
+
+## 2026-08-18 — Promote the richer JD audit taxonomy; keep the live skills field
+
+The live extractor will adopt the agreed audit categories: `qualification`
+(`education` or `domain_knowledge`), `experience_requirement`, `credential`,
+`soft_skill`, `eligibility`, `language_requirement`, and `responsibility`.
+Language and qualification detail stay structured on the audit mention; none of
+these categories enter the skills chart or résumé score.
+
+Keep the production/API field named `skills`: it already holds technical skills
+only and is consumed by the dashboard. Golden fixtures may call their reference
+array `technical_skills`; the evaluator maps that name to the live `skills`
+field. This avoids an unnecessary API/UI break while making the richer
+classification testable.
+
+`non_skill_mentions` is JSONB, so this is an extractor-contract change, not a
+database-column migration. It applies to new live extractions. Do not relabel or
+re-extract the existing corpus in this pass: changing labels cannot recover
+language, eligibility, or other mentions omitted by the older extraction. A
+corpus re-extraction is only considered after the golden evaluations pass.
+
+## 2026-08-17 — JD taxonomy shipped; alternative score still needs one UI fix
+
+The new extraction taxonomy is live: technical skills are stored separately from
+education, experience, credentials, soft skills, and responsibilities; the latter
+are retained as structured `non_skill_mentions` audit data on each job. This was
+needed because Artefact's original extraction treated degree requirements and
+acceptable experience (for example, software development) as mandatory skills,
+which distorted both the market view and résumé score.
+
+Artefact and Micro1 were re-extracted and backfilled. Artefact's visible score
+improved from **50% (4 / 8)** to **71% (5 / 7)**: the false requirements no longer
+penalize the résumé, and GCP is now identified instead of the vague `Cloud` label.
+The audit data means those excluded mentions remain available for future features
+without another screenshot read.
+
+One known defect remains: the UI score is still counting GCP, AWS, and Azure as
+three separate requirements. They are one explicit alternative group, so because
+the résumé has GCP, that group must contribute one satisfied criterion and neither
+AWS nor Azure may lower the score. On the current Artefact requirements, the
+semantically correct score is **100%**, not 71%. Fix the job-card score to use the
+same grouped-alternative logic already intended for matching and tailoring; keep
+each named provider visible and available to the market chart.
+
+---
+
 ## 2026-08-17 — Keep non-skill requirements; score alternatives as one criterion
 
 The extraction contract now separates technical skills from education, experience,
