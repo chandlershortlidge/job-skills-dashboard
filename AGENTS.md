@@ -165,18 +165,33 @@ libraries you haven't customized, or trivial code. **Always mock LLM calls in
 tests — never make real ones.** Tests need to be fast and give the same result
 every time.
 
-### 4. One commit, one thing
+### 4. Commit rollback-safe checkpoints
 
-Each commit does a single thing — a refactor is one commit, a feature is another,
-a test update is another. A broken change made of one commit is easy to find; a
-broken change buried in ten is not. On longer work, commit at each working
-checkpoint rather than all at once.
+A commit is a **known-good recovery point**, not just a record that some work
+happened. Keep commits small enough that if the *next* change introduces a bug,
+we can return to the previous commit without losing unrelated work or restoring
+a half-working state. This is development-scale practice for the same rollback
+discipline production systems need.
 
-Do not create a git commit unless the person explicitly asks you to commit, or
-the task was already given with commit permission. If you are not sure whether
-you may commit, stop after the tested file changes and summarize exactly what is
-ready to commit. Never bundle unrelated cleanup into a commit just because you
-noticed it while working.
+Each commit should contain one coherent change and everything directly required
+for that change to be safely true: implementation, the tests that prove it, and
+any tightly coupled schema/docs/decision update. Do **not** split a feature from
+its proving test merely to make separate commits; neither is a useful recovery
+point alone. Do not bundle unrelated cleanup just because you noticed it while
+working.
+
+When a coherent unit of work is complete and verified, and the next action would
+begin a separate change, **stop and call out the checkpoint explicitly**. Say:
+“This is a clean commit checkpoint,” summarize what would be captured, and
+recommend a concise commit message. Do not merely report that files are
+uncommitted. If the current state is *not* yet a safe checkpoint, say why and
+what remains before it becomes one.
+
+Do not create the git commit unless the person explicitly authorizes it, or the
+task already includes commit permission. The agent is responsible for deciding
+when a commit is warranted; the person decides whether to authorize it. On
+longer work, repeat this at every verified independent checkpoint rather than
+letting several changes accumulate into one rollback unit.
 
 ### Staying inside the plan
 
@@ -214,6 +229,13 @@ The loop produces intent the next session won't have unless it's written down:
 - **A fixed bug** becomes two things: a regression test (locks in what broke) and
   a one-line note on why it happened. The test stops that exact bug; the note
   helps stop the whole class of bug.
+
+**Proactively surface decisions.** Do not wait for the person to notice that a
+discussion has produced something worth recording. When a meaningful design,
+workflow, scope, or trade-off decision appears settled, say so and propose a
+short DECISIONS.md entry (roughly 3–5 lines: conclusion + reasoning that still
+matters). Treat it as a recommendation only: the person decides whether it belongs
+in the log. Do not write it into DECISIONS.md or commit it unless explicitly asked.
 
 Do not put chat transcripts in the repo, and do not try to archive whole
 discussions so a future session can "catch up." The repo holds decisions and
@@ -332,10 +354,11 @@ uv run seed.py                   # load the corpus into Supabase
 # Run the dashboard
 cd dashboard && npm run dev       # Vite dev server — UI only (no api/ functions)
 cd dashboard && vercel dev        # full stack incl. api/ serverless functions
+uv run streamlit run streamlit_app.py  # local, read-only LangSmith experiment dashboard
 
 # Tests (LLM calls are mocked — never live)
-uv run pytest                    # Python: tests/test_normalize.py (pure functions + golden fixture)
-cd dashboard && npm test         # JS: vitest run — match.test.js, api/normalizeSkills.test.js
+uv run pytest                    # Python: normalize.py pure functions + golden fixture
+cd dashboard && npm test         # JS: Vitest suite, including API and eval helpers
 ```
 
 ### Stack
@@ -372,18 +395,30 @@ The repo as it is today (keep this updated when files move):
     `file.js` (signed-URL read path for stored screenshots), `canonicalMap.js` (shared
     normalization map), `sourceStore.js` (the only code touching Supabase Storage),
     plus co-located `*.test.js` (excluded from deploys via `dashboard/.vercelignore`).
-  - `dashboard/public/` — static assets incl. `jobs.json` (corpus snapshot / fallback).
+  - `dashboard/api-lib/jd/` — reusable JD extraction and evaluation logic. It contains
+    the no-write vision boundary and deterministic scoring; it does not handle HTTP,
+    Supabase, or Storage.
+  - `dashboard/public/` — static assets including `jobs.json` (corpus snapshot / fallback).
 - `data/` — `extracted.json` (raw per-screenshot extraction output).
+- `evals/` — 20 golden JSONL fixtures plus `runBaseline.mjs`, the safe local baseline
+  foundation, and `runLangSmithBaseline.mjs`, the guarded live command. The latter
+  requires `--live --confirm-20`, runs the no-write extractor sequentially on existing
+  LangSmith attachments, and writes one experiment only. The retained CSV inventory
+  links database jobs to their local screenshots.
+- `streamlit_app.py` / `langsmith_dashboard_view.py` / `langsmith_dashboard.py` — local,
+  read-only LangSmith evaluation UI, pure presentation transformations, and the guarded
+  data/comparison boundary. They do not run experiments or write to LangSmith;
+  `tests/fixtures/langsmith_experiment_snapshot.json` retains the sanitized real SDK
+  shapes used by the mocked pytest suite.
 - Other docs: `ARCHITECTURE.md`, `jd-aggregator-sprint-plan.md`
   (design/spec detail beyond README).
-- `scratch/` — where step-2 notebooks/probes live; gitignored, not shipped code (fixed
+- `scratch/` — where step-2 notebooks live; gitignored, not shipped code (fixed
   convention across projects — don't rename it)
-- `tests/` — pytest suite: `test_normalize.py` (normalize.py pure functions + golden
-  characterization). JS tests live next to their modules in `dashboard/`
-  (`src/match.test.js`, `api/normalizeSkills.test.js`, run by Vitest).
-- `tests/fixtures/` — the real/sample inputs to run new code against in step 2 and in
-  review (fixed convention across projects — don't rename it). Holds
-  `sample_extracted.json`, `golden_jobs.json`, `golden_canonicalMap.js`.
+- `tests/` — pytest suite; JS tests live next to their modules in `dashboard/` and run
+  through Vitest.
+- `tests/fixtures/` — real/sample inputs for step-2 checks and review (fixed convention
+  across projects — don't rename it). Holds `sample_extracted.json`, `golden_jobs.json`,
+  and `golden_canonicalMap.js`.
 
 Three layout rules:
 
@@ -417,3 +452,7 @@ Three layout rules:
   deployed functions — check the count before adding routes.
 - **`sources` bucket must stay private** — no anon storage policies, ever. A public bucket
   or a `kind=cv` route would make stored résumés enumerable (no login, serial cv ids).
+- **Current LangSmith run queries are async and projection-based** — `client.runs.query()`
+  defaults to a one-day window and returns only ids unless `min_start_time` and `selects`
+  are supplied. Live status strings are lowercase even though generated types currently
+  advertise uppercase literals; normalize them at the dashboard boundary.
