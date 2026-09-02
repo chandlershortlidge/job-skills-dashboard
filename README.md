@@ -32,7 +32,7 @@ JD screenshots ──(Python + vision model, structured JSON)──▶ normalize
 ```
 
 **The pipeline, step by step:**
-1. **Extract (per screenshot).** A Python script loops the ~20 screenshots; for each it calls a vision model and gets back structured data — company, title, seniority (+ the evidence), summary, and a list of skills, each as `raw_text` (as written) + a `canonical` guess + required/nice-to-have.
+1. **Extract (per screenshot).** A Python script loops the ~20 screenshots; for each it calls a vision model and gets back structured data — company, title, seniority (+ the evidence), summary, and a list of skills, each as `raw_text` (as written) + an `extracted_skill` concept label + required/nice-to-have. The model does not assign the final canonical identity.
 2. **Pool** the raw skills from every job into one list.
 3. **Normalize — deterministically, once.** Plain Python over the whole pool: split slash-lists ("GCP/AWS/Azure" → 3 skills) → case-fold ("Vector Databases" = "vector databases") → apply a hand-written canonical alias map ("large language models" → "LLMs"). Same input, same output, every run.
 4. **Aggregate.** Count how many jobs mention each canonical skill (document frequency) and build the skill↔job indexes.

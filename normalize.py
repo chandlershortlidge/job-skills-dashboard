@@ -26,24 +26,84 @@ SPLITS = {
     "bigquery/snowflake": ["BigQuery", "Snowflake"],
 }
 
+# Exact-case aliases run before case-folding. They are intentionally tiny: `ReAct`
+# is an agent pattern while `React` is the JavaScript framework, so lowercasing
+# before this check would merge two unrelated résumé skills.
+EXACT_ALIASES = {
+    "ReAct": "ReAct",
+}
+
 # 3. Conservative alias map: lowercased spelling -> canonical display name.
 #    Only merges we've eyeballed in the real data. When unsure, leave separate.
 ALIASES = {
     "llm apis": "LLMs",
-    "llm orchestration": "LLMs",
+    "llm orchestration": "LLM orchestration",
+    "pandas": "pandas",
     "generative ai": "LLMs",            # gen AI in these JDs = LLM-based (domain call)
     "generative ai applications": "LLMs",
     "generative ai solutions": "LLMs",
     "large language models": "LLMs",
+    "model context protocol": "MCP",
+    "multi-agent systems": "Multi-Agent Systems",
     "google cloud platform": "GCP",
+    "microsoft azure": "Azure",
     "model fine-tuning": "Fine-tuning",
     "retrieval-augmented generation": "RAG",
     "agentic frameworks": "Agents",
     "agent frameworks": "Agents",
     "agentic ai frameworks": "Agents",
+    "ai agents": "Agents",
     "apache airflow": "Airflow",
     "version control": "Git",
     "github": "Git",
+    "openai api": "OpenAI API",
+    "openai apis": "OpenAI API",
+    "openai": "OpenAI",
+    "anthropic api": "Anthropic API",
+    "anthropic apis": "Anthropic API",
+    "anthropic": "Anthropic",
+    "aws bedrock": "AWS Bedrock",
+    "ai/ml": "AI/ML",
+    "ai/ml ecosystem": "AI/ML",
+    "applied ai": "AI/ML",
+    "llm integration": "AI Integration",
+    "ai integration": "AI Integration",
+    "coding agents": "AI developer tooling",
+    "google agent development kit": "Google ADK",
+    "google agent development kit (adk)": "Google ADK",
+    "gemini": "Gemini",
+    "gemini models": "Gemini",
+    "ragas": "Ragas",
+    "vertex ai": "Vertex AI",
+    "vector search": "Vector Search",
+    "aiops": "AIOps",
+    "model selection": "Model Selection",
+    "codex": "Codex",
+    "openai codex": "Codex",
+    "copilot": "GitHub Copilot",
+    "github copilot": "GitHub Copilot",
+    "cursor": "Cursor",
+    "amazon s3": "AWS S3",
+    "ai developer tooling": "AI developer tooling",
+    "tool use": "Tool calling",
+    "chain-of-thought": "Chain-of-Thought",
+    "full-stack competence": "Full-stack development",
+    "full stack competence": "Full-stack development",
+    "full-stack development": "Full-stack development",
+    "backend": "Backend development",
+    "backend development": "Backend development",
+    "frontend": "Frontend development",
+    "frontend development": "Frontend development",
+    "containers": "Containerization",
+    "containerization": "Containerization",
+    "containerized workloads": "Containerization",
+    "serverless": "Serverless",
+    "deep learning": "Deep Learning",
+    "deep learning frameworks": "Deep Learning",
+    "model deployment": "AI deployment",
+    "ml model deployment": "AI deployment",
+    "elasticsearch": "Elasticsearch",
+    "pgvector": "pgvector",
     # Evaluation — the model scattered it across many canonicals; consolidate.
     "ai evaluation": "Evaluation",
     "ai evaluation & benchmarking": "Evaluation",
@@ -52,6 +112,7 @@ ALIASES = {
     "model evaluation": "Evaluation",
     "evaluation frameworks": "Evaluation",
     "llm evaluation": "Evaluation",
+    "ai security guardrails": "security guardrails",
     # Monitoring / observability — same scattering.
     "ai observability": "Observability",
     "ai observability & monitoring": "Observability",
@@ -60,8 +121,10 @@ ALIASES = {
     "monitoring & observability": "Observability",
     # Fine-tuning (clearly the same skill)
     "llm fine-tuning": "Fine-tuning",
-    # APIs (generic) — keep FastAPI and LLM APIs separate
-    "api design": "APIs",
+    # API design / architecture — distinct from consuming or integrating APIs
+    "api architecture": "API Design",
+    "api design": "API Design",
+    # APIs (generic use/integration) — keep FastAPI and provider APIs separate
     "api development": "APIs",
     "api integration": "APIs",
     "api integrations": "APIs",
@@ -78,6 +141,8 @@ ALIASES = {
     "cloud platforms": "Cloud",
     # Data pipelines (generic) — keep Airflow / Prefect / dbt as their own bars
     "etl pipelines": "Data pipelines",
+    "etl/elt pipelines": "Data pipelines",
+    "etl/elt": "Data pipelines",
     "data pipelines": "Data pipelines",
 }
 
@@ -89,6 +154,16 @@ def split_skill(canonical: str) -> list[str]:
     return [canonical.strip()]
 
 
+def extracted_skill_label(skill: dict) -> str:
+    """Read the model-side concept label, preferring the new field while retaining
+    compatibility with committed pre-migration extraction data."""
+    if "extracted_skill" in skill:
+        return skill["extracted_skill"]
+    if "canonical" in skill:
+        return skill["canonical"]
+    raise KeyError("skill requires extracted_skill or legacy canonical")
+
+
 # --- Pure normalization logic (no I/O — tested directly) --------------------------
 
 def build_display(jobs: list[dict]) -> dict[str, str]:
@@ -96,17 +171,20 @@ def build_display(jobs: list[dict]) -> dict[str, str]:
     spelling_counts: dict[str, collections.Counter] = collections.defaultdict(collections.Counter)
     for job in jobs:
         for s in job["skills"]:
-            for part in split_skill(s["canonical"]):
+            for part in split_skill(extracted_skill_label(s)):
                 spelling_counts[part.lower()][part] += 1
     return {key: c.most_common(1)[0][0] for key, c in spelling_counts.items()}
 
 
 def resolve(part: str, display: dict[str, str]) -> str:
     """A raw skill part -> its final canonical: alias first, else the display spelling."""
-    key = part.strip().lower()
+    stripped = part.strip()
+    if stripped in EXACT_ALIASES:
+        return EXACT_ALIASES[stripped]
+    key = stripped.lower()
     if key in ALIASES:
         return ALIASES[key]
-    return display.get(key, part.strip())
+    return display.get(key, stripped)
 
 
 def clean_variants(canon: str, raws) -> list[str]:
@@ -134,7 +212,7 @@ def normalize_jobs(jobs: list[dict], display: dict[str, str]) -> tuple[list[dict
     for job in jobs:
         by_identity: dict[tuple[str, str | None], dict] = {}
         for s in job["skills"]:
-            for part in split_skill(s["canonical"]):
+            for part in split_skill(extracted_skill_label(s)):
                 canon = resolve(part, display)
                 variants[canon].add(s["raw_text"].strip())
                 alternative_group = s.get("alternative_group") or None
@@ -174,7 +252,7 @@ def build_canon_map(display: dict[str, str]) -> dict:
     same way: lowercased spelling -> final display canonical, plus the slash-splits."""
     canon_map = {k: ALIASES.get(k, v) for k, v in display.items()}
     canon_map.update(ALIASES)
-    return {"splits": SPLITS, "map": canon_map}
+    return {"splits": SPLITS, "exact_map": EXACT_ALIASES, "map": canon_map}
 
 
 # --- I/O wrapper ------------------------------------------------------------------

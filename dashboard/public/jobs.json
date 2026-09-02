@@ -122,7 +122,7 @@
           "alternative_group": null
         },
         {
-          "canonical": "APIs",
+          "canonical": "API Design",
           "raw_text": "API architecture",
           "requirement": "required",
           "alternative_group": null
@@ -148,6 +148,12 @@
         {
           "canonical": "Prompt engineering",
           "raw_text": "Reasoning Chains",
+          "requirement": "required",
+          "alternative_group": null
+        },
+        {
+          "canonical": "LLM orchestration",
+          "raw_text": "orchestration stack",
           "requirement": "required",
           "alternative_group": null
         }
@@ -335,7 +341,7 @@
           "alternative_group": null
         },
         {
-          "canonical": "APIs",
+          "canonical": "API Design",
           "raw_text": "API design and testing",
           "requirement": "required",
           "alternative_group": null
@@ -367,6 +373,12 @@
         {
           "canonical": "Tool calling",
           "raw_text": "tool use",
+          "requirement": "required",
+          "alternative_group": null
+        },
+        {
+          "canonical": "LLM orchestration",
+          "raw_text": "orchestration",
           "requirement": "required",
           "alternative_group": null
         },
@@ -420,7 +432,7 @@
           "alternative_group": null
         },
         {
-          "canonical": "AI/ML ecosystem",
+          "canonical": "AI/ML",
           "raw_text": "familiarity with the AI/ML ecosystem",
           "requirement": "required",
           "alternative_group": null
@@ -1626,7 +1638,7 @@
           "alternative_group": null
         },
         {
-          "canonical": "APIs",
+          "canonical": "API Design",
           "raw_text": "API design",
           "requirement": "required",
           "alternative_group": null
@@ -1743,6 +1755,12 @@
         {
           "canonical": "LlamaIndex",
           "raw_text": "LlamaIndex",
+          "requirement": "required",
+          "alternative_group": null
+        },
+        {
+          "canonical": "LLM orchestration",
+          "raw_text": "orchestration tools (e.g., LangChain, LlamaIndex, or custom chaining frameworks)",
           "requirement": "required",
           "alternative_group": null
         },
@@ -1973,9 +1991,6 @@
       "FastAPI/Flask"
     ],
     "APIs": [
-      "API architecture",
-      "API design",
-      "API design and testing",
       "API integrations"
     ],
     "Agents": [
@@ -2009,6 +2024,14 @@
     "n8n": [
       "n8n/Make/Zapier"
     ],
+    "API Design": [
+      "API architecture",
+      "API design and testing"
+    ],
+    "LLM orchestration": [
+      "orchestration",
+      "orchestration stack"
+    ],
     "Evaluation": [
       "AI evaluation frameworks",
       "evaluation frameworks",
@@ -2037,7 +2060,7 @@
       "AI observability tools",
       "monitoring"
     ],
-    "AI/ML ecosystem": [
+    "AI/ML": [
       "familiarity with the AI/ML ecosystem"
     ],
     "Software engineering": [

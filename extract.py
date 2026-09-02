@@ -2,8 +2,8 @@
 
 Reads every screenshot in scratch/screenshots/, calls a vision model in
 structured-output mode, and writes the raw per-job results to data/extracted.json.
-NO normalization here — that's Phase 2 (normalize.py). The model's `canonical` is
-just a hint; the deterministic step decides the real canonical name.
+NO normalization here — that's Phase 2 (normalize.py). The model's `extracted_skill`
+is a semantic hint; the deterministic step decides the real canonical name.
 
 Run:  uv run extract.py
 """
@@ -56,7 +56,9 @@ class NonSkillCategory(str, Enum):
 
 class Skill(BaseModel):
     raw_text: str = Field(description="the skill exactly as it appeared")
-    canonical: str = Field(description="normalized canonical name (a hint; code decides the real one)")
+    extracted_skill: str = Field(
+        description="one concise semantic skill label; code decides the final canonical identity"
+    )
     requirement: Requirement = Field(
         description="required vs nice_to_have; default to required when the JD is ambiguous"
     )
@@ -111,6 +113,8 @@ Fields:
   Do NOT include degrees/fields of study used as education qualifications, years or
   prior-work experience, credentials/publications, soft skills, responsibilities, or
   alternative experience paths. Keep every such visible item in non_skill_mentions.
+- extracted_skill: one concise semantic concept label supported by raw_text. This is an
+  extraction hint for deterministic normalization, not the final canonical identity.
 - non_skill_mentions: each excluded item as raw_text + category (education, experience,
   credential, soft_skill, responsibility) + requirement (required/nice_to_have when
   the JD labels it; otherwise null for a responsibility). This is an audit trail, not
@@ -127,7 +131,7 @@ Fields:
   "cloud platforms (GCP, AWS, or Azure)" -> GCP, AWS, Azure, not "Cloud Platforms";
   group them only when the wording makes them substitutable.
 
-NORMALIZATION (canonical) -- collapse variants to ONE canonical name. Seed map (extend sensibly):
+EXTRACTED SKILL LABELS -- use these concept labels when applicable; code normalizes identity:
 - LLMs            <- large language models, LLM, LLM APIs, LLM orchestration
 - RAG             <- retrieval-augmented generation
 - Agents          <- LLM agents, agentic workflows, multi-agent, agent components

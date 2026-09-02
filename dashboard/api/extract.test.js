@@ -3,8 +3,11 @@
 // front-end depends on: created_at stamped (drives the "New" badge immediately, no reload),
 // live- id, screenshot_hash stripped, skills normalized.
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import incidentFixture from '../../tests/fixtures/live_empty_extraction_20260831.json'
 
-// The parsed job the "model" returns from inside the sandbox.
+const modelOutput = vi.hoisted(() => ({ toolInput: null }))
+
+// The parsed job inside the private provider envelope returned by the sandbox.
 const PARSED = {
   company: 'Acme AI',
   title: 'AI Engineer',
@@ -13,18 +16,30 @@ const PARSED = {
   seniority_basis: 'inferred',
   summary: 'Builds LLM features.',
   skills: [
-    { raw_text: 'Python or Java', canonical: 'Python', requirement: 'required', alternative_group: 'alt-1' },
-    { raw_text: 'Python or Java', canonical: 'Java', requirement: 'required', alternative_group: 'alt-1' },
-    { raw_text: 'large language models', canonical: 'large language models', requirement: 'required', alternative_group: null },
+    { raw_text: 'Python or Java', extracted_skill: 'Python', requirement: 'required', alternative_group: 'alt-1' },
+    { raw_text: 'Python or Java', extracted_skill: 'Java', requirement: 'required', alternative_group: 'alt-1' },
+    { raw_text: 'large language models', extracted_skill: 'large language models', requirement: 'required', alternative_group: null },
   ],
-  non_skill_mentions: [{ raw_text: 'Degree in computer science', category: 'education', requirement: 'required' }],
+  non_skill_mentions: [
+    { raw_text: 'Degree in computer science', category: 'qualification', subtype: 'education', requirement: 'required' },
+    { raw_text: 'German B2', category: 'language_requirement', language: 'German', proficiency: 'B2', requirement: 'nice_to_have' },
+    { raw_text: 'Design the service', category: 'responsibility', requirement: null },
+  ],
 }
 
 vi.mock('@daytona/sdk', () => ({
   Daytona: class {
     async create() {
       return {
-        process: { codeRun: async () => ({ exitCode: 0, result: JSON.stringify(PARSED) }) },
+        process: { codeRun: async () => ({
+          exitCode: 0,
+          result: JSON.stringify({
+            response_id: 'msg_route_test',
+            stop_reason: 'tool_use',
+            usage: { input_tokens: 100, output_tokens: 200 },
+            tool_input: modelOutput.toolInput,
+          }),
+        }) },
         delete: async () => {},
       }
     }
@@ -96,10 +111,15 @@ function mockRes() {
 
 const REQ = {
   method: 'POST',
-  body: { image: Buffer.from('fake-png-bytes').toString('base64'), media_type: 'image/png' },
+  body: {
+    // The extractor validates image bytes before the mocked sandbox runs.
+    image: Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString('base64'),
+    media_type: 'image/png',
+  },
 }
 
 beforeEach(() => {
+  modelOutput.toolInput = PARSED
   process.env.DAYTONA_API_KEY = 'test-key'
   process.env.ANTHROPIC_API_KEY = 'test-key'
   // No Supabase env -> dedup + persistence degrade gracefully; handler must still 200.
@@ -136,6 +156,7 @@ describe('POST /api/extract (Daytona mocked, no Supabase)', () => {
     const canons = res.body.job.skills.map((s) => s.canonical)
     expect(canons).toContain('Python')
     expect(canons).toContain('LLMs') // "large language models" -> LLMs
+    expect(res.body.job.skills.every((skill) => !('extracted_skill' in skill))).toBe(true)
   })
 
   it('returns the extraction audit and preserves alternative groups', async () => {
@@ -181,12 +202,29 @@ describe('POST /api/extract (Daytona + Supabase mocked — source-file storage)'
     expect(supa.insertedJobs[0].screenshot_path).toBe(job.screenshot_path)
   })
 
+  it('rejects the real empty extraction before creating or persisting route-owned state', async () => {
+    modelOutput.toolInput = incidentFixture.extraction
+    const res = mockRes()
+
+    await handler(REQ, res)
+
+    expect(res.statusCode).toBe(422)
+    expect(res.body).toEqual({
+      error: "No technical skills were extracted. Try a screenshot that includes the role's technical requirements.",
+    })
+    expect(res.body).not.toHaveProperty('job')
+    expect(supa.uploads).toEqual([])
+    expect(supa.insertedJobs).toEqual([])
+    expect(supa.insertedSkills).toEqual([])
+  })
+
   it('persists the non-skill audit on the job and alternative group on each skill', async () => {
     const res = mockRes()
     await handler(REQ, res)
     expect(supa.insertedJobs[0].non_skill_mentions).toEqual(PARSED.non_skill_mentions)
     expect(supa.insertedSkills.filter((s) => s.alternative_group === 'alt-1').map((s) => s.canonical))
       .toEqual(['Python', 'Java'])
+    expect(supa.insertedSkills.every((skill) => !('extracted_skill' in skill))).toBe(true)
   })
 
   it('upload failure degrades: job persists and returns with a null path', async () => {

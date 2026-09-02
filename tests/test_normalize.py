@@ -33,6 +33,28 @@ class TestSplitSkill:
         assert normalize.split_skill("Kubernetes") == ["Kubernetes"]
 
 
+class TestExtractedSkillLabel:
+    def test_reads_new_model_field(self):
+        assert normalize.extracted_skill_label({"extracted_skill": "Python"}) == "Python"
+
+    def test_reads_legacy_canonical_field(self):
+        assert normalize.extracted_skill_label({"canonical": "Python"}) == "Python"
+
+    def test_prefers_new_field_during_migration(self):
+        assert normalize.extracted_skill_label({
+            "extracted_skill": "New label",
+            "canonical": "Legacy label",
+        }) == "New label"
+
+    def test_rejects_a_skill_without_either_identity_field(self):
+        try:
+            normalize.extracted_skill_label({"raw_text": "Python"})
+        except KeyError as error:
+            assert "extracted_skill or legacy canonical" in str(error)
+        else:
+            raise AssertionError("missing model identity field should fail")
+
+
 class TestAliasAndSplitTables:
     def test_alias_keys_are_lowercased(self):
         # resolve() looks aliases up by lowercased key, so a non-lowercased key would
@@ -63,6 +85,67 @@ class TestResolve:
 
     def test_lookup_is_case_insensitive(self):
         assert normalize.resolve("FASTAPI", {"fastapi": "FastAPI"}) == "FastAPI"
+
+    def test_merges_microsoft_azure_into_the_cloud_platform_canonical(self):
+        assert normalize.resolve("Microsoft Azure", {}) == "Azure"
+
+    def test_merges_the_mcp_full_name_into_the_acronym_canonical(self):
+        assert normalize.resolve("Model Context Protocol", {}) == "MCP"
+
+    def test_keeps_multi_agent_systems_as_its_own_canonical(self):
+        assert normalize.resolve("multi-agent systems", {}) == "Multi-Agent Systems"
+
+    def test_merges_etl_elt_pipelines_into_data_pipelines(self):
+        assert normalize.resolve("ETL/ELT Pipelines", {}) == "Data pipelines"
+
+    def test_merges_short_etl_elt_into_data_pipelines(self):
+        assert normalize.resolve("ETL/ELT", {}) == "Data pipelines"
+
+    def test_keeps_broad_ai_ml_distinct_from_explicit_machine_learning(self):
+        assert normalize.resolve("AI/ML", {}) == "AI/ML"
+        assert normalize.resolve("AI/ML ecosystem", {}) == "AI/ML"
+        assert normalize.resolve("Applied AI", {}) == "AI/ML"
+        assert normalize.resolve("Machine Learning", {}) == "Machine Learning"
+
+    def test_stabilizes_golden_016_framework_and_platform_names(self):
+        assert normalize.resolve("Google Agent Development Kit", {}) == "Google ADK"
+        assert normalize.resolve("Google Agent Development Kit (ADK)", {}) == "Google ADK"
+        assert normalize.resolve("Gemini Models", {}) == "Gemini"
+        assert normalize.resolve("RAGAs", {}) == "Ragas"
+        assert normalize.resolve("Vertex AI", {}) == "Vertex AI"
+        assert normalize.resolve("Vector Search", {}) == "Vector Search"
+        assert normalize.resolve("AIOps", {}) == "AIOps"
+
+    def test_does_not_collapse_google_cloud_ai_ml_into_a_duplicate_parent(self):
+        assert normalize.resolve("Google Cloud AI/ML", {}) == "Google Cloud AI/ML"
+
+    def test_stabilizes_golden_017_lifecycle_and_parent_labels(self):
+        assert normalize.resolve("Model Deployment", {}) == "AI deployment"
+        assert normalize.resolve("ML Model Deployment", {}) == "AI deployment"
+        assert normalize.resolve("Deep Learning Frameworks", {}) == "Deep Learning"
+        assert normalize.resolve("containerized workloads", {}) == "Containerization"
+
+    def test_stabilizes_golden_018_s3_provider_spelling(self):
+        assert normalize.resolve("Amazon S3", {}) == "AWS S3"
+
+    def test_reconciles_llm_integration_and_coding_tool_categories(self):
+        assert normalize.resolve("LLM Integration", {}) == "AI Integration"
+        assert normalize.resolve("AI Integration", {}) == "AI Integration"
+        assert normalize.resolve("coding agents", {}) == "AI developer tooling"
+
+    def test_stabilizes_named_coding_products_and_golden_013_bare_copilot(self):
+        assert normalize.resolve("Codex", {}) == "Codex"
+        assert normalize.resolve("OpenAI Codex", {}) == "Codex"
+        assert normalize.resolve("GitHub Copilot", {}) == "GitHub Copilot"
+        assert normalize.resolve("Copilot", {}) == "GitHub Copilot"
+
+    def test_merges_ai_security_guardrails_into_existing_canonical(self):
+        assert normalize.resolve("AI Security Guardrails", {}) == "security guardrails"
+
+    def test_keeps_api_design_distinct_from_api_use(self):
+        assert normalize.resolve("API design", {}) == "API Design"
+        assert normalize.resolve("API architecture", {}) == "API Design"
+        assert normalize.resolve("API integration", {}) == "APIs"
 
 
 class TestCleanVariants:
@@ -116,6 +199,24 @@ class TestNormalizeJobs:
         py = next(s for s in out[0]["skills"] if s["canonical"] == "Python")
         assert py["requirement"] == "required"
 
+    def test_exact_case_react_pattern_stays_distinct_from_react_framework(self):
+        display = {"react": "React"}
+        assert normalize.resolve("ReAct", display) == "ReAct"
+        assert normalize.resolve("React", display) == "React"
+
+    def test_llm_orchestration_stays_distinct_from_llms(self):
+        display = {"llm orchestration": "LLM orchestration", "llms": "LLMs"}
+        assert normalize.resolve("LLM orchestration", display) == "LLM orchestration"
+        assert normalize.resolve("LLMs", display) == "LLMs"
+
+    def test_pandas_alias_pins_library_casing(self):
+        assert normalize.resolve("pandas", {}) == "pandas"
+        assert normalize.resolve("Pandas", {}) == "pandas"
+
+    def test_live_map_carries_exact_case_aliases(self):
+        canon_map = normalize.build_canon_map({"react": "React"})
+        assert canon_map["exact_map"] == {"ReAct": "ReAct"}
+
     def test_preserves_non_skill_audit_and_alternative_groups(self):
         jobs = [{
             "id": "j", "company": "C", "title": "T", "seniority": "Mid",
@@ -160,3 +261,17 @@ class TestGolden:
             + "\n"
         )
         assert produced == (FIXTURES / "golden_canonicalMap.js").read_text()
+
+    def test_new_extracted_skill_input_reproduces_legacy_normalized_output(self):
+        legacy_jobs = self._extracted()["jobs"]
+        migrated_jobs = json.loads(json.dumps(legacy_jobs))
+        for job in migrated_jobs:
+            for skill in job["skills"]:
+                skill["extracted_skill"] = skill.pop("canonical")
+
+        legacy_display = normalize.build_display(legacy_jobs)
+        migrated_display = normalize.build_display(migrated_jobs)
+        assert migrated_display == legacy_display
+        assert normalize.normalize_jobs(migrated_jobs, migrated_display) == (
+            normalize.normalize_jobs(legacy_jobs, legacy_display)
+        )

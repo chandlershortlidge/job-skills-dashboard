@@ -1,0 +1,18 @@
+{
+  "provenance": {
+    "source": "public production job row",
+    "job_id": "live-1788176061097",
+    "observed_at": "2026-08-31T11:34:21.097+00:00",
+    "note": "Exact persisted extraction projection from the reported incident; route-owned and persistence-only fields are deliberately omitted because the raw provider envelope was not retained."
+  },
+  "extraction": {
+    "company": null,
+    "title": null,
+    "seniority": null,
+    "seniority_signal": null,
+    "seniority_basis": null,
+    "summary": null,
+    "skills": [],
+    "non_skill_mentions": []
+  }
+}
