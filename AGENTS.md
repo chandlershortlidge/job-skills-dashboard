@@ -83,11 +83,10 @@ A normal session-start response should include:
 ---
 
 ## The build loop
-
-Every meaningful change runs the same four steps: **plan → check it in a
-notebook → move it into the codebase with a test → commit.** Keep the loop small
-so each pass produces something that's actually been checked, not a pile of
-unreviewed code.
+Every meaningful change runs the same four steps: 
+**plan → check it in an ephemeral sandbox → move it into the codebase with a test → commit + push.** 
+Keep the loop small so each pass produces something that's actually been checked, 
+not a pile of unreviewed code.
 
 **What "meaningful" means, and who decides:** default to the full loop for
 anything that ships or persists in the repo. You don't get to decide a change is
@@ -95,6 +94,45 @@ anything that ships or persists in the repo. You don't get to decide a change is
 you when a task is exempt (a throwaway probe, a demo that won't outlive itself,
 pure exploration before something is worth building seriously). Until they do,
 run the loop.
+
+### Parallel execution and sub-agents
+
+The build loop defines the required checkpoints; it does not require every operation
+inside a checkpoint to run sequentially.
+
+Before doing substantial new investigation, implementation, or verification, check whether independent branches can be delegated profitably. Delegate when parallel execution is likely to shorten the critical path without increasing coordination risk or giving separate agents independent authority over the design. Do not delegate work that is already resolved by evidence in the current context, is too small to justify agent overhead, or depends on another branch’s result.
+
+Good candidates for delegation include:
+- read-only investigation of separate parts of the repo;
+- implementation of independent modules whose interfaces are already settled;
+- inspection of fixtures, tests, or call paths;
+- independent review of a proposed change;
+- test, build, lint, type-check, or eval commands that do not depend on one another.
+
+Keep work sequential when one branch depends on another branch's result, when agents
+would modify the same files or shared contract, or when the work requires a new product,
+architecture, schema, or scope decision.
+
+The parent agent owns the approved plan, architectural decisions, shared interfaces,
+integration, commit boundaries, and the final claim that the change works. Sub-agents
+execute bounded work; they do not expand scope or reinterpret the plan.
+
+Give every sub-agent a narrow task, explicit allowed files/actions, and a definition of
+done. Writing sub-agents should work in isolated worktrees or sandboxes so concurrent
+changes cannot corrupt one another. Read-only or verification agents may share the repo
+when they cannot mutate it.
+
+Each sub-agent must return evidence: what it inspected or changed, commands actually
+run, relevant outputs or failures, and anything unresolved. The parent agent must review
+and integrate that evidence before relying on it.
+
+Prefer deterministic tools over model reasoning for mechanical verification. Independent
+test/build/lint/eval commands should run concurrently where safe. If a model is useful only
+to supervise or summarize bounded verification, prefer a smaller capable model and
+escalate ambiguous failures or code changes to the parent agent.
+
+Parallelism is an optimization, not a reason to make checkpoints larger. The normal
+sandbox → test → commit evidence requirements still apply.
 
 ### 1. Plan before writing code
 
@@ -105,7 +143,8 @@ covers:
 - **Definition of done** — specific things that must be true to call it finished.
 - **Adds / does not add** — what's in scope and, just as importantly, what's
   deliberately left out.
-- **Steps** — ordered, with checkpoints.
+- **Steps** — ordered, with checkpoints; mark dependencies and any branches that can
+  safely execute in parallel.
 - **Pitfalls** — known traps to avoid.
 - **Budget** — concrete limits for this pass: files touched, sample inputs,
   expected test commands, LLM/API calls, cost-sensitive operations, and anything
@@ -121,41 +160,56 @@ unless they explicitly asked for a throwaway probe or exploration. If the reques
 is urgent or clearly scoped, keep the plan very short, but still state it before
 changing files.
 
-### 2. Check new behavior in a notebook first
+### 2. Check new behavior in an ephemeral sandbox first
 
-Any new code that produces or transforms data gets built in a notebook before it
-becomes part of the codebase. "Notebook" here means a runnable scratch file (a
-`.ipynb` or a plain script — either is fine) that lives in `scratch/`, runs, and
-shows its output. It is not part of the codebase. In it:
+Any new code that produces or transforms data gets checked in a disposable sandbox
+before it becomes part of the codebase. The sandbox is the default home for throwaway
+probes: create a clean environment, run the experiment, show its output, and destroy
+the environment afterward. Do not accumulate one-off probe files in the repo just
+because they were useful during one investigation.
+
+A sandbox probe can be a `.ipynb` or a plain script — either is fine. It does not
+need to live in the repo. In it:
 
 1. Write the function.
-2. Call it on real input data from `tests/fixtures/`, not invented. If you have no
-   real input, say so and ask, rather than fabricating it.
+2. Call it on real input data from `tests/fixtures/`, not invented. Copy or otherwise
+   make the real fixture available inside the sandbox. If you have no real input, say
+   so and ask, rather than fabricating it.
 3. Print meaningful output at each step.
 4. Explain in plain English what the output means and what to expect.
+5. After review, destroy the sandbox. Use an ephemeral/auto-delete lifecycle so cleanup
+   does not depend only on the happy path reaching an explicit delete call.
 
 The person then compares three things: the output, what they expected, and your
 explanation of the output. Bugs usually hide where your explanation and their
 expectation disagree. If all three line up, the code moves into the codebase. If
 not, expect a specific question before anything moves.
 
+`scratch/` is now the exception, not the default cache for probes. Put an experiment
+there only when there is a concrete reason to preserve it for later human inspection,
+manual reruns, or documentation. Say why it is being kept. Once an experiment has
+produced durable knowledge, promote that knowledge to the proper place — production
+code, a regression test, a fixture, or `DECISIONS.md` — rather than keeping a historical
+pile of superseded probes.
+
 This applies to anything where a wrong result would be hard to spot by eye —
 extractors, evaluators, parsers, data transformations. It does not apply to
 config changes, simple refactors, or UI work. When you are unsure whether the
-notebook step applies, say why and ask before skipping it. Do not silently decide
+sandbox step applies, say why and ask before skipping it. Do not silently decide
 that risky behavior is "too small" to check.
 
 ### 3. Move it into the codebase with a test
 
-Once the notebook shows the code works, move it into its proper file and write a
+Once the sandbox probe shows the code works, move it into its proper file and write a
 pytest test that locks in the behavior just verified. The test is not optional.
 The notebook proved it worked once; the test proves it keeps working as other
 things change. When you move it, say what's moving where and what the test locks
 down, so the person can confirm the test matches what was actually checked.
 
 Give the new module a top docstring per the layout rules below (what it does,
-what it does NOT do, its invariants). After the move, the notebook can be deleted
-or kept as documentation. It is not shipped code.
+what it does NOT do, its invariants). The disposable probe normally dies with the
+sandbox. If it was deliberately preserved in `scratch/`, keep or delete it based on
+whether it still has review or documentation value. It is not shipped code.
 
 Tests should cover: schema rules (required vs optional fields, limits, defaults),
 plain function behavior, important paths (extraction with the LLM call mocked,
@@ -165,7 +219,7 @@ libraries you haven't customized, or trivial code. **Always mock LLM calls in
 tests — never make real ones.** Tests need to be fast and give the same result
 every time.
 
-### 4. Commit rollback-safe checkpoints
+### 4. Commit and push rollback-safe checkpoints
 
 A commit is a **known-good recovery point**, not just a record that some work
 happened. Keep commits small enough that if the *next* change introduces a bug,
@@ -173,25 +227,58 @@ we can return to the previous commit without losing unrelated work or restoring
 a half-working state. This is development-scale practice for the same rollback
 discipline production systems need.
 
-Each commit should contain one coherent change and everything directly required
-for that change to be safely true: implementation, the tests that prove it, and
-any tightly coupled schema/docs/decision update. Do **not** split a feature from
-its proving test merely to make separate commits; neither is a useful recovery
-point alone. Do not bundle unrelated cleanup just because you noticed it while
-working.
+In this repo, a normal checkpoint is **commit + push**, not a local commit left
+behind. `main` auto-deploys when pushed, so do not call something a clean
+checkpoint until it is both rollback-safe and safe to deploy.
+
+Each checkpoint should contain one coherent change and everything directly
+required for that change to be safely true: implementation, the tests that prove
+it, and any tightly coupled schema/docs/decision update. Do **not** split a feature
+from its proving test merely to make separate commits; neither is a useful
+recovery point alone. Do not bundle unrelated cleanup just because you noticed
+it while working.
+
+Before proposing a checkpoint, verify the repository's synchronization state.
+Check the current branch, working tree, and its divergence from the tracked
+upstream. If there are already unpushed commits that are not part of the current
+checkpoint, **stop before creating another commit**. Report the exact number of
+unpushed commits and summarize what they contain. Do not stack new commits on top
+of an unexplained local backlog and do not push that backlog without explicit
+review.
 
 When a coherent unit of work is complete and verified, and the next action would
 begin a separate change, **stop and call out the checkpoint explicitly**. Say:
-“This is a clean commit checkpoint,” summarize what would be captured, and
-recommend a concise commit message. Do not merely report that files are
-uncommitted. If the current state is *not* yet a safe checkpoint, say why and
-what remains before it becomes one.
+“This is a clean commit-and-push checkpoint,” summarize what would be captured,
+state that pushing it will deploy the resulting `main` state when applicable,
+and recommend a concise commit message. Then stop and ask exactly:
 
-Do not create the git commit unless the person explicitly authorizes it, or the
-task already includes commit permission. The agent is responsible for deciding
-when a commit is warranted; the person decides whether to authorize it. On
-longer work, repeat this at every verified independent checkpoint rather than
-letting several changes accumulate into one rollback unit.
+`Commit and push? (y/n)`
+
+If the person answers `y`, create only the proposed rollback-safe commit using
+the recommended message, then immediately push that commit to the tracked
+upstream branch. After the push, verify that the remote branch contains the
+commit and report the pushed commit hash.
+
+If the commit succeeds but the push fails, stop. Report the failure and leave
+the local commit as the only unpushed checkpoint. Resolve that state before
+starting or committing any further independent work.
+
+If the person answers `n`, do not commit or push. Ask what they want to
+reconsider, change, or discuss before proceeding.
+
+A **local-only commit is exceptional**. Do not create one unless the person
+explicitly asks for a local commit without a push.
+
+Do not continue into the next independent change until the commit-and-push
+decision has been resolved. Do not merely report that files are uncommitted.
+If the current state is *not* yet a safe checkpoint, say why and what remains
+before it becomes one.
+
+Do not create the git commit or push unless the person explicitly authorizes it,
+or the task already includes commit-and-push permission. The agent is responsible
+for deciding when a checkpoint is warranted; the person decides whether to
+authorize it. On longer work, repeat this at every verified independent checkpoint
+rather than letting several changes accumulate into one rollback unit.
 
 ### Staying inside the plan
 
@@ -412,13 +499,13 @@ The repo as it is today (keep this updated when files move):
   shapes used by the mocked pytest suite.
 - Other docs: `ARCHITECTURE.md`, `jd-aggregator-sprint-plan.md`
   (design/spec detail beyond README).
-- `scratch/` — where step-2 notebooks live; gitignored, not shipped code (fixed
-  convention across projects — don't rename it)
+- `scratch/` — deliberately preserved experiments only; gitignored, not shipped code.
+  Default throwaway probes live in the ephemeral sandbox instead (fixed convention
+  across projects — don't rename it)
 - `tests/` — pytest suite; JS tests live next to their modules in `dashboard/` and run
   through Vitest.
-- `tests/fixtures/` — real/sample inputs for step-2 checks and review (fixed convention
-  across projects — don't rename it). Holds `sample_extracted.json`, `golden_jobs.json`,
-  and `golden_canonicalMap.js`.
+- `tests/fixtures/` — the real/sample inputs to make available inside the step-2
+  sandbox and use in review (fixed convention across projects — don't rename it)
 
 Three layout rules:
 
