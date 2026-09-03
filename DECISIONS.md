@@ -15,6 +15,13 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-03 09:30 — Limit the global skills chart to ten rows at a time
+
+The seniority `All` view starts with the ten highest-ranked eligible skills and reveals
+ten more per “See more” action. Junior, Mid, and Senior remain uncapped; the existing
+all-skills inclusion filter stays separate. This is presentation-only pagination applied
+after filtering and ranking, and skill search remains a separate follow-up.
+
 ## 2026-09-02 — Evaluate examples by independent technical identity
 
 When a broad technical capability introduces examples, retain the broad capability and
