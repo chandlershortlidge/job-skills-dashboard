@@ -15,6 +15,16 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-03 — Add W&B Weave as an additive Golden evaluation sink
+
+Keep the committed Golden fixtures and deterministic scorer as the evaluation source of
+truth. Add a separate guarded W&B Weave reporting path while retaining LangSmith.
+
+Preflight all 20 local screenshot hashes before any W&B write or model call. Send only
+fixture text, hashes, expected/actual extraction, scores, and allowlisted metadata—never
+screenshots, presigned URLs, or private Storage data. Log the project-computed aggregates
+explicitly and keep model execution sequential with no retries.
+
 ## 2026-09-03 — Require a final candidate-requirement completeness audit
 
 Before returning an extraction, revisit every candidate-facing requirement. Audit
