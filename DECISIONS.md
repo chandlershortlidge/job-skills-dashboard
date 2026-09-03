@@ -15,6 +15,21 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-03 — Require a final candidate-requirement completeness audit
+
+Before returning an extraction, revisit every candidate-facing requirement. Audit
+classification does not consume embedded technical skills, and extracting one item does
+not discharge explicit coequal list members, broad parents, lifecycle stages, practices,
+named methods, or technical domains that independently pass the résumé-matchable test.
+
+Standalone testing and operational security qualify when explicitly requested; continue
+excluding responsibility-only technology, governance or compliance awareness, generic
+maturity and workflow evidence, and agent components that merely explain a broader
+capability. Candidate-facing prior work or familiarity in a named technical space is
+technical evidence, not an excluded alternative experience path. Normalize
+`Event-driven architecture` and `Event-driven systems` to the same canonical identity,
+while preserving the semantic distinction between safety and security.
+
 ## 2026-09-03 — Set the final Golden aggregate benchmark at 90% per core metric
 
 Require at least 90% canonical precision, recall, requirement accuracy, and applicable-only
