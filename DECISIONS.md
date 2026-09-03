@@ -15,6 +15,13 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-03 — Set the final Golden aggregate benchmark at 90% per core metric
+
+Require at least 90% canonical precision, recall, requirement accuracy, and applicable-only
+alternative-group accuracy across all 20 Goldens. Apply this threshold prospectively; do not
+rewrite results recorded under earlier targets. Future tuning should focus on recall and
+grouping while keeping precision and requirement accuracy at or above 90%.
+
 ## 2026-09-03 09:30 — Limit the global skills chart to ten rows at a time
 
 The seniority `All` view starts with the ten highest-ranked eligible skills and reveals
