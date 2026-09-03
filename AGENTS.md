@@ -442,6 +442,7 @@ uv run seed.py                   # load the corpus into Supabase
 cd dashboard && npm run dev       # Vite dev server — UI only (no api/ functions)
 cd dashboard && vercel dev        # full stack incl. api/ serverless functions
 uv run streamlit run streamlit_app.py  # local, read-only LangSmith experiment dashboard
+WANDB_PROJECT=<entity/project> node --env-file=.env evals/runWeaveBaseline.mjs --live --confirm-20  # guarded W&B Weave baseline
 
 # Tests (LLM calls are mocked — never live)
 uv run pytest                    # Python: normalize.py pure functions + golden fixture
@@ -491,7 +492,9 @@ The repo as it is today (keep this updated when files move):
   foundation, and `runLangSmithBaseline.mjs`, the guarded live command. The latter
   requires `--live --confirm-20`, runs the no-write extractor sequentially on existing
   LangSmith attachments, and writes one experiment only. The retained CSV inventory
-  links database jobs to their local screenshots.
+  links database jobs to their local screenshots. `runWeaveBaseline.mjs` is the separate
+  guarded W&B Weave path: it verifies all 20 local screenshots before any external write
+  or model call, then writes one evaluation without uploading the image bytes.
 - `streamlit_app.py` / `langsmith_dashboard_view.py` / `langsmith_dashboard.py` — local,
   read-only LangSmith evaluation UI, pure presentation transformations, and the guarded
   data/comparison boundary. They do not run experiments or write to LangSmith;
@@ -543,3 +546,7 @@ Three layout rules:
   defaults to a one-day window and returns only ids unless `min_start_time` and `selects`
   are supplied. Live status strings are lowercase even though generated types currently
   advertise uppercase literals; normalize them at the dashboard boundary.
+- **W&B Golden runs use local screenshots but never upload them** — set `WANDB_PROJECT`
+  as `entity/project`; the guarded runner sends fixture text, hashes, expected/actual JSON,
+  scores, and allowlisted metadata only, after every local image has passed SHA preflight.
+  `weave` stays a dev dependency, and no deployed API route imports it.
