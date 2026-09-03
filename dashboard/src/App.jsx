@@ -9,6 +9,7 @@ import { findSimilarJob } from './similar'
 import { fetchScreenshotDownloadUrl, triggerDownload } from './downloadShot'
 import TailorScreen from './tailor/TailorScreen'
 import ApplicationsPage from './ApplicationsPage'
+import { paginateSkillChart, SKILL_CHART_PAGE_SIZE } from './skillChartPagination'
 
 // Selecting a level re-scopes the chart to that level's jobs and recolors the bars.
 // "All" (no level) keeps the default global indigo.
@@ -46,6 +47,7 @@ export default function App() {
   const [jobsExpanded, setJobsExpanded] = useState(false)
   const [visibleOlder, setVisibleOlder] = useState(JOBS_PAGE)
   const [showAll, setShowAll] = useState(false)
+  const [skillChartCap, setSkillChartCap] = useState(SKILL_CHART_PAGE_SIZE)
   const [uploading, setUploading] = useState(false)
   const [uploadError, setUploadError] = useState(null)
   const [lastUploadedJob, setLastUploadedJob] = useState(null)
@@ -364,6 +366,7 @@ export default function App() {
   }
 
   const { jobs, variants, senCounts, stats, chart, max } = derived
+  const visibleChart = paginateSkillChart(chart, selectedSeniority, skillChartCap)
   const activeColor = selectedSeniority
     ? SENIORITY_LEVELS.find((s) => s.level === selectedSeniority).color
     : GLOBAL_COLOR
@@ -503,7 +506,10 @@ export default function App() {
             className={'sen-chip' + (selectedSeniority === null ? ' active' : '')}
             style={{ '--chip-color': GLOBAL_COLOR }}
             aria-pressed={selectedSeniority === null}
-            onClick={() => setSelectedSeniority(null)}
+            onClick={() => {
+              setSelectedSeniority(null)
+              setSkillChartCap(SKILL_CHART_PAGE_SIZE)
+            }}
           >
             All <span className="sen-chip-n">{stats.jobs}</span>
           </button>
@@ -513,7 +519,10 @@ export default function App() {
               className={'sen-chip' + (selectedSeniority === level ? ' active' : '')}
               style={{ '--chip-color': color }}
               aria-pressed={selectedSeniority === level}
-              onClick={() => setSelectedSeniority(level)}
+              onClick={() => {
+                setSelectedSeniority(level)
+                setSkillChartCap(SKILL_CHART_PAGE_SIZE)
+              }}
             >
               {level} <span className="sen-chip-n">{senCounts[level]}</span>
             </button>
@@ -533,9 +542,12 @@ export default function App() {
             <input
               type="checkbox"
               checked={showAll}
-              onChange={(e) => setShowAll(e.target.checked)}
+              onChange={(e) => {
+                setShowAll(e.target.checked)
+                setSkillChartCap(SKILL_CHART_PAGE_SIZE)
+              }}
             />
-            show all
+            include all skills
           </label>
         </div>
         <p className="hint">
@@ -545,11 +557,11 @@ export default function App() {
         </p>
         {chart.length === 0 ? (
           <p className="empty">
-            No required skills appear in 2+ {selectedSeniority} jobs — try “show all”.
+            No required skills appear in 2+ {selectedSeniority} jobs — try “include all skills”.
           </p>
         ) : (
           <ul className="bars" style={{ '--bar-color': activeColor }}>
-            {chart.map((d) => (
+            {visibleChart.chart.map((d) => (
               <li
                 key={d.skill}
                 className={'bar-row' + (selectedSkill === d.skill ? ' selected' : '')}
@@ -568,6 +580,15 @@ export default function App() {
               </li>
             ))}
           </ul>
+        )}
+        {selectedSeniority === null && visibleChart.hasMore && (
+          <button
+            type="button"
+            className="chart-more"
+            onClick={() => setSkillChartCap(visibleChart.nextCap)}
+          >
+            See more ({visibleChart.chart.length} of {chart.length})
+          </button>
         )}
       </section>
 

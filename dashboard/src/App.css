@@ -115,6 +115,16 @@ h2 {
   color: #444;
   text-align: right;
 }
+.chart-more {
+  display: block;
+  margin: 12px auto 0;
+  padding: 6px 12px;
+  border: 1px solid #d8d8e5;
+  border-radius: 6px;
+  background: #fff;
+  color: #4f46e5;
+  cursor: pointer;
+}
 
 /* merged-from tooltip (pure CSS on hover) */
 .tooltip {
