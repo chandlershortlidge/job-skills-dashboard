@@ -15,6 +15,14 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-04 — Evaluate source classification and skill extraction as two model calls
+
+For Golden candidates, treat one pipeline attempt as up to two sequential calls: first
+classify and source-align passages, then extract skills from candidate-requirement and
+dedicated-Tech-Stack passages only. A failed first stage stops the attempt; neither stage
+is retried. Production adoption remains conditional on broader Golden recall, grouping,
+latency, and cost evidence.
+
 ## 2026-09-03 — Add W&B Weave as an additive Golden evaluation sink
 
 Keep the committed Golden fixtures and deterministic scorer as the evaluation source of
