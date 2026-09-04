@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 import {
   allowlistedWeaveMetadata,
   runWeaveBaseline,
+  weaveEvaluationLoggerOptions,
   weaveAggregateSummary,
   weaveScoreMetrics,
 } from './weaveBaseline.js'
@@ -52,6 +53,24 @@ function resolveExactSource(fixture) {
 }
 
 describe('W&B Weave JD baseline boundary', () => {
+  it('omits the bare dataset label that W&B UI parses as a reference', () => {
+    const options = weaveEvaluationLoggerOptions({
+      name: 'jd-skill-extraction-baseline',
+      description: 'Golden evaluation',
+      model: 'claude-test',
+      metadata: {
+        git_sha: 'test-sha',
+        model: 'claude-test',
+        secret: 'must-not-pass',
+      },
+    })
+
+    expect(options).not.toHaveProperty('dataset')
+    expect(options.name).toBe('jd-skill-extraction-baseline')
+    expect(options.model).toEqual({ name: 'claude-test' })
+    expect(options.attributes).toEqual({ git_sha: 'test-sha', model: 'claude-test' })
+  })
+
   it('preflights all 20 sources before reporter initialization or extraction', async () => {
     expect(fixtures).toHaveLength(20)
     const initializeReporter = vi.fn()

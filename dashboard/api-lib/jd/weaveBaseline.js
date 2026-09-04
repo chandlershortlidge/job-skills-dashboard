@@ -34,6 +34,17 @@ export function allowlistedWeaveMetadata(metadata = {}) {
   return definedEntries(ALLOWED_METADATA_KEYS.map((key) => [key, metadata[key]]))
 }
 
+// Build the EvaluationLogger options without a bare dataset label: the W&B UI
+// currently parses that optional field as a weave:// reference and rejects it.
+export function weaveEvaluationLoggerOptions({ metadata = {}, model, name, description }) {
+  return {
+    name,
+    description,
+    model: { name: model },
+    attributes: allowlistedWeaveMetadata(metadata),
+  }
+}
+
 // Resolve and verify the complete source set before any external reporter or model can run.
 export async function preloadVerifiedGoldenSources({ fixtures, resolveSource }) {
   if (!Array.isArray(fixtures) || fixtures.length === 0) throw new TypeError('fixtures must be a non-empty array')

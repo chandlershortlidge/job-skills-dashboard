@@ -16,7 +16,7 @@ import * as weave from '../dashboard/node_modules/weave/dist/index.mjs'
 import canonicalMap from '../dashboard/api/canonicalMap.js'
 import { normalizeExtractedTechnicalSkills } from '../dashboard/api/normalizeSkills.js'
 import { runVisionExtraction, VISION_MODEL, VISION_PROMPT_SCHEMA_SHA256 } from '../dashboard/api-lib/jd/visionExtraction.js'
-import { runWeaveBaseline } from '../dashboard/api-lib/jd/weaveBaseline.js'
+import { runWeaveBaseline, weaveEvaluationLoggerOptions } from '../dashboard/api-lib/jd/weaveBaseline.js'
 
 const requiredFlags = new Set(['--live', '--confirm-20'])
 const providedFlags = new Set(process.argv.slice(2))
@@ -95,13 +95,12 @@ const result = await runWeaveBaseline({
   }),
   initializeReporter: async (metadata) => {
     await weave.init(process.env.WANDB_PROJECT)
-    return new weave.EvaluationLogger({
+    return new weave.EvaluationLogger(weaveEvaluationLoggerOptions({
       name: 'jd-skill-extraction-baseline',
       description: '20-fixture JD vision extraction Golden evaluation',
-      dataset: 'jd-skill-extraction-golden-v1',
-      model: { name: VISION_MODEL },
-      attributes: metadata,
-    })
+      model: VISION_MODEL,
+      metadata,
+    }))
   },
   metadata: {
     git_sha: await gitSha(),
