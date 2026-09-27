@@ -156,7 +156,7 @@ Three layout rules:
 Vercel, project **Root Directory = `dashboard`**. Pushing to `main` auto-deploys to
 production, so a commit-and-push checkpoint on `main` is also a deploy. Preview deploys
 share the production Supabase DB (see pitfalls). Remote: `origin` at
-`https://github.com/chandlershortlidge/job-pipeline.git`.
+`https://github.com/chandlershortlidge/job-skills-dashboard.git`.
 
 ### Pitfalls specific to this project
 
