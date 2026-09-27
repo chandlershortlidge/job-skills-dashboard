@@ -243,3 +243,9 @@ node_modules/
 .env*
 CLAUDE.local.md
 graphify-out/
+
+# Local agent tooling (hooks, skill symlinks, worktrees)
+.claude/
+
+# Exported LangSmith experiment runs (re-exportable, not source)
+evals/LangSmith_runs/
