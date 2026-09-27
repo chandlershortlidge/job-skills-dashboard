@@ -1,36 +1,51 @@
-# AGENTS.md
 
-This is the operating manual for any AI agent working in this repo. Read it
-before starting. It has two kinds of content: the **way of working** (the same
-in every project — follow it as written) and the **project specifics** (the
-`<...>` placeholders — particular to this repo). If a placeholder is still
-unfilled, say so before relying on it rather than guessing.
+#AGENTS.md
 
----
+<!-- TEMPLATE-VERSION: 2026-09-19-v4 -->
 
-## Who you're working with
+This is the operating manual for any AI agent working in this repo. Read it before
+starting.
 
-The person you're working with thinks clearly about systems and writes precise
-instructions, but does not verify code by reading it line by line. They verify by
-*behavior*: by running things, by checking outputs on real inputs, and by
-reading your plain-English explanation of what the code does and comparing it to
-what they asked for.
+The file has two parts:
 
-What this means for you, always:
+- a **shared operating manual**, copied from the user's canonical AGENTS template;
+- **project specifics**, filled separately for each repository.
 
-- Explain what your code does in plain English, not just by handing over code.
-- Show outputs on real inputs whenever you can, and say what those outputs mean.
-- Leave behavior inspectable: print or log the intermediate values that would let
-  the person — or a later agent — see what actually happened, especially around
-  LLM calls and data transforms. A result you can't trace back is one they can't
-  trust.
-- If your explanation and your code don't match, that's a real problem — stop and
-  resolve it, don't paper over it.
-- You are not the authority here. You produce a recommendation; the person
-  evaluates it. You are sometimes confidently wrong. Expect to be questioned, and
-  treat being questioned as normal.
+Do not make repo-local edits to the shared operating manual unless the person
+explicitly asks. Improvements to shared workflow should be made in the canonical
+template first, then synced into projects while preserving the project-specific block.
 
----
+<!-- BEGIN SHARED -->
+
+## Shared guidance (v4)
+
+1. Read the repository's project instructions and relevant README, DECISIONS, and specifications before changing code.
+
+2. Verify files, symbols, interfaces, and repository facts before relying on them. Do not invent missing facts.
+
+3. Follow recorded decisions and existing repository patterns unless the task explicitly changes them.
+
+4. Make the smallest change that satisfies the task. Avoid unrelated refactors and unnecessary dependencies, abstractions, compatibility layers, or features.
+
+5. Preserve existing behavior outside the requested scope.
+
+6. Add deterministic regression tests for meaningful behavior changes and bug fixes. Test observable behavior, including relevant boundaries and failure paths.
+
+7. Use existing real or sample fixtures where available. Do not alter authoritative fixtures merely to make tests pass.
+
+8. Mock provider calls in tests. Never make live provider calls from tests.
+
+9. Run the relevant test suite and other checks proportionate to the change's risk before claiming completion. Report anything not verified.
+
+10. For load-bearing pure logic where ordinary tests may miss semantically wrong behavior—such as scoring, evaluators, parsers, validation, or privacy/data-release boundaries—use mutation testing only when an established mutation workflow already exists and the expected signal justifies the added cost. Do not introduce new mutation-testing infrastructure as part of an unrelated task.
+
+11. Explain changes and results plainly. Report test, build, runtime, API, error, and stack-trace evidence as observed only when actually run or seen in the current session. Surface failures, contradictions, and uncertainty.
+
+12. Verify the final patch against the task, including scope, unintended changes, and consistency with the reported evidence, before claiming completion.
+
+<!-- END SHARED -->
+
+<!-- BEGIN PROJECT -->
 
 ## What this project is
 
@@ -42,389 +57,7 @@ live at https://job-pipeline-opal.vercel.app.
 
 ---
 
-## Three documents hold the project's intent
-
-You have no memory of past sessions. Anything not written down does not exist to
-you. So intent is kept in three files, and you should read them:
-
-- **README.md** — why this project exists and what it's for.
-- **DECISIONS.md** — the choices that have been made and why. Read it before
-  proposing anything that might contradict a past choice. If a new proposal does
-  contradict one, say so plainly rather than silently overriding it.
-- **AGENTS.md** — this file: how to work here.
-
-### First task in a new project: fill the project specifics
-
-When this file is copied into a new repo, the first agent task is to fill the
-project-specific sections from README.md, DECISIONS.md, the project brief, and
-the actual repo structure.
-
-Do not invent missing details. If the docs do not say something, leave the
-placeholder or mark it as unknown.
-
-After filling the sections, present them for review before relying on them. Once
-confirmed, commit the filled AGENTS.md before starting feature work.
-
-### Starting each session
-
-At the start of every coding session, read AGENTS.md, README.md, and
-DECISIONS.md before proposing work. Then report any unfilled placeholders,
-contradictions, missing commands, or project-specific facts you cannot verify.
-Do not rely on placeholder text as fact. If the docs are incomplete, say what is
-missing and propose the smallest useful next step that does not require guessing.
-
-A normal session-start response should include:
-
-- what you understand the task to be;
-- any repo facts or decisions that constrain the task;
-- anything missing or ambiguous that affects the work;
-- the smallest plan that can be reviewed before code changes begin.
-
----
-
-## The build loop
-Every meaningful change runs the same four steps: 
-**plan → check it in an ephemeral sandbox → move it into the codebase with a test → commit + push.** 
-Keep the loop small so each pass produces something that's actually been checked, 
-not a pile of unreviewed code.
-
-**What "meaningful" means, and who decides:** default to the full loop for
-anything that ships or persists in the repo. You don't get to decide a change is
-"too small" for the loop — that judgment stays with the person. They will tell
-you when a task is exempt (a throwaway probe, a demo that won't outlive itself,
-pure exploration before something is worth building seriously). Until they do,
-run the loop.
-
-### Parallel execution and sub-agents
-
-The build loop defines the required checkpoints; it does not require every operation
-inside a checkpoint to run sequentially.
-
-Before doing substantial new investigation, implementation, or verification, check whether independent branches can be delegated profitably. Delegate when parallel execution is likely to shorten the critical path without increasing coordination risk or giving separate agents independent authority over the design. Do not delegate work that is already resolved by evidence in the current context, is too small to justify agent overhead, or depends on another branch’s result.
-
-Good candidates for delegation include:
-- read-only investigation of separate parts of the repo;
-- implementation of independent modules whose interfaces are already settled;
-- inspection of fixtures, tests, or call paths;
-- independent review of a proposed change;
-- test, build, lint, type-check, or eval commands that do not depend on one another.
-
-Keep work sequential when one branch depends on another branch's result, when agents
-would modify the same files or shared contract, or when the work requires a new product,
-architecture, schema, or scope decision.
-
-The parent agent owns the approved plan, architectural decisions, shared interfaces,
-integration, commit boundaries, and the final claim that the change works. Sub-agents
-execute bounded work; they do not expand scope or reinterpret the plan.
-
-Give every sub-agent a narrow task, explicit allowed files/actions, and a definition of
-done. Writing sub-agents should work in isolated worktrees or sandboxes so concurrent
-changes cannot corrupt one another. Read-only or verification agents may share the repo
-when they cannot mutate it.
-
-Each sub-agent must return evidence: what it inspected or changed, commands actually
-run, relevant outputs or failures, and anything unresolved. The parent agent must review
-and integrate that evidence before relying on it.
-
-Prefer deterministic tools over model reasoning for mechanical verification. Independent
-test/build/lint/eval commands should run concurrently where safe. If a model is useful only
-to supervise or summarize bounded verification, prefer a smaller capable model and
-escalate ambiguous failures or code changes to the parent agent.
-
-Parallelism is an optimization, not a reason to make checkpoints larger. The normal
-sandbox → test → commit evidence requirements still apply.
-
-### 1. Plan before writing code
-
-Every meaningful change starts with a short written plan, before any code. A plan
-covers:
-
-- **Purpose** — what this is for.
-- **Definition of done** — specific things that must be true to call it finished.
-- **Adds / does not add** — what's in scope and, just as importantly, what's
-  deliberately left out.
-- **Steps** — ordered, with checkpoints; mark dependencies and any branches that can
-  safely execute in parallel.
-- **Pitfalls** — known traps to avoid.
-- **Budget** — concrete limits for this pass: files touched, sample inputs,
-  expected test commands, LLM/API calls, cost-sensitive operations, and anything
-  deliberately deferred. Avoid vague time estimates when a mechanical cap would
-  be clearer.
-
-The person reviews the plan before you build. If a plan is too long to review
-carefully, it's too long to build — make it shorter first. The first plan you
-propose is usually too big; expect to be asked what can be cut.
-
-Do not start writing persistent code until the person has accepted the plan,
-unless they explicitly asked for a throwaway probe or exploration. If the request
-is urgent or clearly scoped, keep the plan very short, but still state it before
-changing files.
-
-### 2. Check new behavior in an ephemeral sandbox first
-
-Any new code that produces or transforms data gets checked in a disposable sandbox
-before it becomes part of the codebase. The sandbox is the default home for throwaway
-probes: create a clean environment, run the experiment, show its output, and destroy
-the environment afterward. Do not accumulate one-off probe files in the repo just
-because they were useful during one investigation.
-
-A sandbox probe can be a `.ipynb` or a plain script — either is fine. It does not
-need to live in the repo. In it:
-
-1. Write the function.
-2. Call it on real input data from `tests/fixtures/`, not invented. Copy or otherwise
-   make the real fixture available inside the sandbox. If you have no real input, say
-   so and ask, rather than fabricating it.
-3. Print meaningful output at each step.
-4. Explain in plain English what the output means and what to expect.
-5. After review, destroy the sandbox. Use an ephemeral/auto-delete lifecycle so cleanup
-   does not depend only on the happy path reaching an explicit delete call.
-
-The person then compares three things: the output, what they expected, and your
-explanation of the output. Bugs usually hide where your explanation and their
-expectation disagree. If all three line up, the code moves into the codebase. If
-not, expect a specific question before anything moves.
-
-`scratch/` is now the exception, not the default cache for probes. Put an experiment
-there only when there is a concrete reason to preserve it for later human inspection,
-manual reruns, or documentation. Say why it is being kept. Once an experiment has
-produced durable knowledge, promote that knowledge to the proper place — production
-code, a regression test, a fixture, or `DECISIONS.md` — rather than keeping a historical
-pile of superseded probes.
-
-This applies to anything where a wrong result would be hard to spot by eye —
-extractors, evaluators, parsers, data transformations. It does not apply to
-config changes, simple refactors, or UI work. When you are unsure whether the
-sandbox step applies, say why and ask before skipping it. Do not silently decide
-that risky behavior is "too small" to check.
-
-### 3. Move it into the codebase with a test
-
-Once the sandbox probe shows the code works, move it into its proper file and write a
-pytest test that locks in the behavior just verified. The test is not optional.
-The notebook proved it worked once; the test proves it keeps working as other
-things change. When you move it, say what's moving where and what the test locks
-down, so the person can confirm the test matches what was actually checked.
-
-Give the new module a top docstring per the layout rules below (what it does,
-what it does NOT do, its invariants). The disposable probe normally dies with the
-sandbox. If it was deliberately preserved in `scratch/`, keep or delete it based on
-whether it still has review or documentation value. It is not shipped code.
-
-Tests should cover: schema rules (required vs optional fields, limits, defaults),
-plain function behavior, important paths (extraction with the LLM call mocked,
-retry logic, what happens when validation fails), and every bug ever found. Tests
-should not cover: exact wording of prompts (changes too often), behavior of
-libraries you haven't customized, or trivial code. **Always mock LLM calls in
-tests — never make real ones.** Tests need to be fast and give the same result
-every time.
-
-### 4. Commit and push rollback-safe checkpoints
-
-A commit is a **known-good recovery point**, not just a record that some work
-happened. Keep commits small enough that if the *next* change introduces a bug,
-we can return to the previous commit without losing unrelated work or restoring
-a half-working state. This is development-scale practice for the same rollback
-discipline production systems need.
-
-In this repo, a normal checkpoint is **commit + push**, not a local commit left
-behind. `main` auto-deploys when pushed, so do not call something a clean
-checkpoint until it is both rollback-safe and safe to deploy.
-
-Each checkpoint should contain one coherent change and everything directly
-required for that change to be safely true: implementation, the tests that prove
-it, and any tightly coupled schema/docs/decision update. Do **not** split a feature
-from its proving test merely to make separate commits; neither is a useful
-recovery point alone. Do not bundle unrelated cleanup just because you noticed
-it while working.
-
-Before proposing a checkpoint, verify the repository's synchronization state.
-Check the current branch, working tree, and its divergence from the tracked
-upstream. If there are already unpushed commits that are not part of the current
-checkpoint, **stop before creating another commit**. Report the exact number of
-unpushed commits and summarize what they contain. Do not stack new commits on top
-of an unexplained local backlog and do not push that backlog without explicit
-review.
-
-When a coherent unit of work is complete and verified, and the next action would
-begin a separate change, **stop and call out the checkpoint explicitly**. Say:
-“This is a clean commit-and-push checkpoint,” summarize what would be captured,
-state that pushing it will deploy the resulting `main` state when applicable,
-and recommend a concise commit message. Then stop and ask exactly:
-
-`Commit and push? (y/n)`
-
-If the person answers `y`, create only the proposed rollback-safe commit using
-the recommended message, then immediately push that commit to the tracked
-upstream branch. After the push, verify that the remote branch contains the
-commit and report the pushed commit hash.
-
-If the commit succeeds but the push fails, stop. Report the failure and leave
-the local commit as the only unpushed checkpoint. Resolve that state before
-starting or committing any further independent work.
-
-If the person answers `n`, do not commit or push. Ask what they want to
-reconsider, change, or discuss before proceeding.
-
-A **local-only commit is exceptional**. Do not create one unless the person
-explicitly asks for a local commit without a push.
-
-Do not continue into the next independent change until the commit-and-push
-decision has been resolved. Do not merely report that files are uncommitted.
-If the current state is *not* yet a safe checkpoint, say why and what remains
-before it becomes one.
-
-Do not create the git commit or push unless the person explicitly authorizes it,
-or the task already includes commit-and-push permission. The agent is responsible
-for deciding when a checkpoint is warranted; the person decides whether to
-authorize it. On longer work, repeat this at every verified independent checkpoint
-rather than letting several changes accumulate into one rollback unit.
-
-### Staying inside the plan
-
-When you spot follow-up work beyond the current plan, name it in your summary and
-leave it out of the current change. Don't expand the task to absorb it — scope
-creep is exactly what the plan exists to prevent. Surfacing it is enough; the
-person decides whether it becomes its own planned change.
-
-### When something fails or the repo disagrees with the docs
-
-Failures are information. Do not hide them, hand-wave them, or keep patching
-blindly. When a command fails, a fixture is missing, a test contradicts the plan,
-or the repo layout disagrees with AGENTS.md, stop and report:
-
-- the exact command or action that failed;
-- the relevant error or mismatch;
-- what you think it means;
-- the smallest next check or change you recommend.
-
-Do not invent missing fixtures, commands, environment variables, or project
-constraints. If a required input is absent, say so and either use the nearest real
-fixture with permission or propose adding the missing fixture as its own small
-step.
-
----
-
-## Recording decisions and bugs as you go
-
-The loop produces intent the next session won't have unless it's written down:
-
-- **A decision** (chose X over Y, and why) goes in DECISIONS.md as a few lines:
-  the conclusion and the reasoning that still matters — not a transcript. If it
-  can't be put in a few lines, it isn't settled yet, so it doesn't belong in the
-  file.
-- **A fixed bug** becomes two things: a regression test (locks in what broke) and
-  a one-line note on why it happened. The test stops that exact bug; the note
-  helps stop the whole class of bug.
-
-**Proactively surface decisions.** Do not wait for the person to notice that a
-discussion has produced something worth recording. When a meaningful design,
-workflow, scope, or trade-off decision appears settled, say so and propose a
-short DECISIONS.md entry (roughly 3–5 lines: conclusion + reasoning that still
-matters). Treat it as a recommendation only: the person decides whether it belongs
-in the log. Do not write it into DECISIONS.md or commit it unless explicitly asked.
-
-Do not put chat transcripts in the repo, and do not try to archive whole
-discussions so a future session can "catch up." The repo holds decisions and
-reasoning, not history.
-
-**When a decision gets committed depends on when it was made:**
-
-- Decided *before* any code (a discussion that settled a design question): it
-  commits on its own, first — there's no code yet to attach it to.
-- Decided *during* the work (you hit a fork mid-task and the person resolves it):
-  it commits together with the code it affected, since the reasoning and the
-  change belong together.
-
-Either way, the rule that matters: the decision must be in the current files
-*before* anything depends on it. You read the current files, not the git history,
-so timing is what counts — not how the commits are bundled.
-
----
-
-## Handing off from a discussion to a coding task
-
-Design thinking often happens in a separate chat, away from you. When one of
-those discussions settles a decision, the handoff produces **two separate
-things** — never one mixed-together blob:
-
-1. **A decision entry** ready to paste into DECISIONS.md. The person confirms it
-   says what they meant, then commits it on its own, before any code.
-2. **A coding instruction** for you that *points at* that decision rather than
-   re-explaining it — e.g. "Per the DECISIONS.md entry on X, refactor Y to…"
-
-The decision is committed first, then you get the coding task. By the time you
-start, the reasoning is already in the files you read.
-
-### Command: "prep this for decisions"
-
-When the person says **"prep this for decisions"** (or something close), a
-discussion has settled a decision they want to record and act on. Produce the two
-separate things above:
-
-1. **Decision entry** — formatted for DECISIONS.md: a few lines, conclusion plus
-   the reasoning that survived. Not a transcript. If it can't be stated in a few
-   lines, say so — it isn't settled yet.
-2. **Coding instruction** — for the next task, pointing at the decision entry
-   rather than restating it.
-
-Do **not** write to DECISIONS.md or change code in response to this command. The
-person commits the decision entry themselves, then gives you the coding task
-separately. This command only produces the two things for review.
-
-Only do this when a decision was actually reached. A discussion that explained
-something but settled nothing has nothing to prep.
-
----
-
-## How you'll be reviewed, and when to expect pushback
-
-When you produce code, the person runs a fixed check: reads the function name and
-docstring, asks for a plain-English explanation, checks outputs on real input,
-and scans for tells (names that don't match the description, unexplained numbers,
-vague logic). For load-bearing code — schemas, evaluation logic, anything that
-transforms data — expect to be asked to critique your own work and call out edge
-cases.
-
-Expect pushback when any of these is true. Treat each as a signal to slow down and
-explain, not to defend:
-
-- Your proposal contradicts a recorded decision in DECISIONS.md.
-- You're adding a dependency or an abstraction for something used only once.
-- The work has grown past what the plan said.
-- There's a number, retry count, or limit with no stated reason.
-- Your plain-English explanation doesn't match the code you wrote.
-
-### Reading a function together
-
-Once a session, the person may pick one function you wrote and read it line by
-line, asking you to explain as they go. When this happens, explain plainly and
-honestly, one line at a time — this is how they build their own ability to read
-code, so don't rush it or skip ahead.
-
----
-
 ## How this project is built and laid out
-
-### Filling in the project specifics (once, at launch)
-
-Everything below this line, plus "What this project is" near the top, are the
-project-specific parts of this file. Fill them from the project brief and
-README — don't invent.
-
-- **What this project is / Stack / Running and testing:** transcribe from the
-  brief. Keep "What this project is" a *pointer* at README, not a paraphrase of
-  it — less to drift.
-- **Where things live:** scaffold from the intended layout, but this section
-  describes the repo as it *is*, not as it's planned — keep it updated whenever
-  files move. `scratch/` and `tests/fixtures/` are fixed; fill in the rest.
-- **Pitfalls:** record only pitfalls the brief explicitly names or that have
-  actually been hit. Do not generate plausible-sounding ones — an invented
-  pitfall is noise the agent will then treat as a real constraint. This accretes
-  over time like DECISIONS.md; near-empty at launch is correct.
-
-After filling these, present the filled sections for the person to confirm before
-relying on them. The fill is a draft to confirm, not a fact to accept.
 
 ### Running and testing
 
@@ -461,7 +94,6 @@ cd dashboard && npm test         # JS: Vitest suite, including API and eval help
   the service-role key. Source files live in the **private** Supabase Storage bucket
   `sources` (`screenshots/` + `cvs/` prefixes, no anon policies); the only browser read
   path is `GET /api/file` (signed URLs, screenshots only — see storage-blueprint.md D1).
-- **Deploy:** Vercel (push to `main` auto-deploys; project **Root Directory = `dashboard`**).
 
 ### Where things live
 
@@ -504,21 +136,27 @@ The repo as it is today (keep this updated when files move):
   (design/spec detail beyond README).
 - `scratch/` — deliberately preserved experiments only; gitignored, not shipped code.
   Default throwaway probes live in the ephemeral sandbox instead (fixed convention
-  across projects — don't rename it)
+  across projects — don't rename it).
 - `tests/` — pytest suite; JS tests live next to their modules in `dashboard/` and run
   through Vitest.
-- `tests/fixtures/` — the real/sample inputs to make available inside the step-2
-  sandbox and use in review (fixed convention across projects — don't rename it)
+- `tests/fixtures/` — the real/sample inputs to make available inside the sandbox and
+  use in review (fixed convention across projects — don't rename it).
 
 Three layout rules:
 
-- Imports flow one direction — lower-level files don't import from higher-level
-  ones.
-- Functions that mix input/output with logic get split into pure logic plus a
-  thin I/O wrapper. The pure part is what gets tested.
-- Every module gets a top docstring: what it does, what it explicitly does *not*
-  do, and the invariants it holds. The "does not" line is the one that matters —
-  it's the boundary that keeps code from landing in the wrong place.
+- Imports flow one direction — lower-level files don't import from higher-level ones.
+- Functions that mix input/output with logic get split into pure logic plus a thin I/O
+  wrapper. The pure part is what gets tested.
+- Every module gets a top docstring: what it does, what it explicitly does *not* do, and
+  the invariants it holds. The "does not" line is the one that matters — it's the boundary
+  that keeps code from landing in the wrong place.
+
+### Deploy behavior
+
+Vercel, project **Root Directory = `dashboard`**. Pushing to `main` auto-deploys to
+production, so a commit-and-push checkpoint on `main` is also a deploy. Preview deploys
+share the production Supabase DB (see pitfalls). Remote: `origin` at
+`https://github.com/chandlershortlidge/job-pipeline.git`.
 
 ### Pitfalls specific to this project
 
@@ -550,3 +188,5 @@ Three layout rules:
   as `entity/project`; the guarded runner sends fixture text, hashes, expected/actual JSON,
   scores, and allowlisted metadata only, after every local image has passed SHA preflight.
   `weave` stays a dev dependency, and no deployed API route imports it.
+
+<!-- END PROJECT -->
