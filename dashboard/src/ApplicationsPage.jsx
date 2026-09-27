@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { supabase } from './supabase'
+import { APPLICATION_PAGE_SELECT } from './applicationColumns'
 
 // Read-only view over the `application` table (email → application parser output).
-// Uses the anon browser client — RLS is public-read, so no writes happen here.
+// Uses the anon browser client, which may read only the allowlisted columns in
+// applicationColumns.js (column-level grant); email content stays server-side.
 // When Supabase is unconfigured the stub client returns { data: null, error }, and
 // there is no static applications fixture (unlike jobs.json), so any error OR an
 // empty result renders the same explicit empty state rather than a blank screen.
@@ -29,7 +31,7 @@ export default function ApplicationsPage({ onBack }) {
     // Embed the linked job ad (company/title) via the job_id FK — null when unlinked.
     supabase
       .from('application')
-      .select('*, job(company, title)')
+      .select(APPLICATION_PAGE_SELECT)
       .order('received_at', { ascending: false })
       .then(({ data, error }) => {
         if (cancelled) return

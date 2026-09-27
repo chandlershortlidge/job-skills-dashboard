@@ -15,6 +15,16 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-27 — Public key may read only the Applications page's columns
+
+The anon key ships in the public bundle and `application` was readable in full: anyone
+could fetch stored email bodies, subjects, senders, and recruiter names (verified with
+the anon key). The fix is a column-level grant: anon/authenticated may select only
+`id, company_raw, role_raw, category, received_at, job_id`, and the page requests exactly
+those (`dashboard/src/applicationColumns.js`, never `*`). Chosen over a new serverless
+route because it needs no function slot and puts the guard in the database. Company,
+role, and outcome remain publicly visible; making the page private is a separate call.
+
 ## 2026-09-04 — Evaluate source classification and skill extraction as two model calls
 
 For Golden candidates, treat one pipeline attempt as up to two sequential calls: first
