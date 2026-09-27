@@ -15,6 +15,28 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-27 — Email parser: next steps are measurement and evidence, not prompt tuning
+
+The July noise experiment (tightening the classifier's `other` prompt) made results
+worse (stored rows 34→41) and was reverted. Row counts are not accuracy, so we stop
+tuning blind. Planned order, not yet started:
+
+1. A labeled email Golden set (~60–100 real emails incl. WorkEnablr/MentorCruise noise,
+   labeled candidacy yes/no, category, company, job) scored like the JD Goldens.
+   Deferred: no time to label now.
+2. Deterministic pre-filtering before any LLM call: bulk-mail headers
+   (`List-Unsubscribe`, `Precedence`), Gmail categories, an ATS-domain allowlist, a
+   sender blocklist, and a bounded default date range for `run_parser.py`.
+3. Feed the classifier that evidence (sender domain, bulk flag, Gmail category,
+   thread context) and ask "about the recipient's own candidacy?" before the category.
+4. Model one application per job with emails as events and derived status, linked
+   through Gmail `threadId` — the product question is per job, not per email.
+5. Matching as candidate generation (fuzzy company, sender domain, recency) plus a
+   constrained pick-one-or-none adjudicator, with a confirm-link UI.
+
+Open question that sizes 4–5: how many applied-to jobs have no screenshot in `job`. If
+most don't, low link rate is missing data, not a matcher bug.
+
 ## 2026-09-27 — Public key may read only the Applications page's columns
 
 The anon key ships in the public bundle and `application` was readable in full: anyone
