@@ -136,6 +136,9 @@ ALIASES = {
     "automated testing": "Testing",
     "integration testing": "Testing",
     "debugging & testing": "Testing",
+    # Event-driven: architecture and systems are one identity (DECISIONS 2026-09-03)
+    "event-driven architecture": "Event-driven systems",
+    "event-driven systems": "Event-driven systems",
     # Cloud (generic) — GCP / AWS / Azure stay separate
     "cloud infrastructure": "Cloud",
     "cloud platforms": "Cloud",

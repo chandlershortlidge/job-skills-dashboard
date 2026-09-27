@@ -15,6 +15,28 @@ undoing a decision without knowing the reason behind it.
 
 ---
 
+## 2026-09-27 — Set two-stage extraction aside; single-call prompt fixes don't reach embedded skills
+
+Two baselines on the current prompt (`356fe9ad` Sept 3, `627e5a91` today; paired on 18
+Goldens) agree within a point on skill metrics: precision ~0.94, requirement accuracy
+~0.98 pass; recall ~0.83 and alternative grouping ~0.66–0.74 (n≈10, too noisy to judge)
+do not. Recall gains under ~2 points are within run-to-run noise. Of Sept 3's 67 missed
+skills, 41 sat in passages the model already extracted from; 26 came from passages it
+filed only as experience or qualification. Two-stage passage filtering targets only the
+latter, aims at precision (already passing), and a stage-1 mislabel loses a whole passage.
+
+Tried instead, probed live on Goldens 019 (TryHackMe), 014 (IU), and 006 (control): a
+completeness-audit block, rewording the three conflicting rules (years/prior-work,
+security-awareness, alternative paths), and ordering `non_skill_mentions` before
+`skills` in the schema. None recovered the target skills; the reorder lost Prompt
+engineering. All reverted. Next candidate: an add-only second call over the already-filed
+experience/qualification items asking only which technical skills they name.
+
+Golden 014's "3+ years of professional backend software engineering experience" stays
+an experience_requirement plus two distinct skills, Software engineering and Backend
+development. The model reliably misses Software engineering, likely because its prompt
+rule triggers on skills/fundamentals/expertise/background, not years of experience.
+
 ## 2026-09-27 — Email parser: next steps are measurement and evidence, not prompt tuning
 
 The July noise experiment (tightening the classifier's `other` prompt) made results

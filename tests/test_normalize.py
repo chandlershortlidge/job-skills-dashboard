@@ -95,6 +95,10 @@ class TestResolve:
     def test_keeps_multi_agent_systems_as_its_own_canonical(self):
         assert normalize.resolve("multi-agent systems", {}) == "Multi-Agent Systems"
 
+    def test_merges_event_driven_architecture_and_systems(self):
+        assert normalize.resolve("Event-driven architecture", {}) == "Event-driven systems"
+        assert normalize.resolve("Event-driven systems", {}) == "Event-driven systems"
+
     def test_merges_etl_elt_pipelines_into_data_pipelines(self):
         assert normalize.resolve("ETL/ELT Pipelines", {}) == "Data pipelines"
 

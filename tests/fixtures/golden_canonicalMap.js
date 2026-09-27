@@ -220,6 +220,7 @@ export default {
     "ai security guardrails": "security guardrails",
     "api architecture": "API Design",
     "restful apis": "APIs",
+    "event-driven architecture": "Event-driven systems",
     "etl/elt pipelines": "Data pipelines",
     "etl/elt": "Data pipelines"
   }
